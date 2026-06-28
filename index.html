@@ -38,13 +38,18 @@
         font-weight: 700;
         letter-spacing: 0.12em;
         text-transform: uppercase;
+        cursor: pointer;
       }
       .topbar .status {
         display: flex;
         gap: 18px;
         align-items: center;
       }
+      .topbar .clock {
+        font-variant-numeric: tabular-nums;
+      }
       .hero {
+        position: relative;
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -53,14 +58,65 @@
         background: rgba(255,255,255,0.18);
       }
       .card {
-        width: min(1200px, 100%);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(760px, 100%);
         display: grid;
         grid-template-columns: 1.25fr 0.85fr;
-        gap: 36px;
-        padding: 56px;
+        gap: 32px;
+        padding: 42px;
         border-radius: 32px;
         background: rgba(255,255,255,0.92);
         box-shadow: 0 45px 90px rgba(0,0,0,0.18);
+      }
+      .window-header {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 24px;
+        margin: -42px -42px 36px;
+        border-radius: 32px 32px 0 0;
+        background: rgba(255,255,255,0.98);
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+      }
+      .drag-area {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        cursor: grab;
+        user-select: none;
+        touch-action: none;
+      }
+      .drag-area:active {
+        cursor: grabbing;
+      }
+      .drag-area strong {
+        font-size: 1rem;
+      }
+      .drag-area small {
+        color: #666;
+      }
+      .window-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 75, 75, 0.1);
+        color: #c22;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 160ms ease, transform 160ms ease;
+      }
+      .window-close:hover {
+        background: rgba(255, 75, 75, 0.18);
+        transform: translateY(-1px);
       }
       .intro {
         display: flex;
@@ -135,28 +191,79 @@
           padding: 40px 18px 24px;
         }
         .card {
+          position: static;
+          transform: none;
           padding: 32px;
+        }
+        .window-header {
+          margin: 0 0 24px;
+          border-radius: 24px;
         }
       }
     </style>
   </head>
   <body>
     <div class="topbar">
-      <div class="label">Heer</div>
+      <div class="label" id="brandToggle">Heer</div>
       <div class="status">
+        <span class="clock" id="topbarClock">--:--</span>
         <span>☀️ Always Learning</span>
         <span>June 27, 2026</span>
       </div>
     </div>
     <main class="hero">
-      <section class="card">
+      <section class="card" id="welcomeWindow">
+        <div class="window-header">
+          <div class="drag-area" id="windowDragHandle">
+            <strong>Welcome to Heer's WebOS</strong>
+            <small>Drag this window</small>
+          </div>
+        </div>
         <div class="intro">
-          <h1>Welcome to Heer's WebOS</h1>
-          <p> Every expert was once a beginner.</p>
+          <p>Every expert was once a beginner.</p>
           <p>This website is my journey—one project, one lesson, and one challenge at a time.</p>
           <a href="page2.html">More about me</a>
         </div>
       </section>
     </main>
+    <script>
+      const welcomeWindow = document.getElementById('welcomeWindow');
+      const dragHandle = document.getElementById('windowDragHandle');
+      let isDragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      dragHandle.addEventListener('pointerdown', (event) => {
+        const rect = welcomeWindow.getBoundingClientRect();
+        offsetX = event.clientX - rect.left;
+        offsetY = event.clientY - rect.top;
+        welcomeWindow.style.transform = 'none';
+        welcomeWindow.style.left = `${rect.left}px`;
+        welcomeWindow.style.top = `${rect.top}px`;
+        isDragging = true;
+        dragHandle.setPointerCapture(event.pointerId);
+      });
+
+      document.addEventListener('pointermove', (event) => {
+        if (!isDragging) return;
+        welcomeWindow.style.left = `${event.clientX - offsetX}px`;
+        welcomeWindow.style.top = `${event.clientY - offsetY}px`;
+      });
+
+      document.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
+
+      const clockElement = document.getElementById('topbarClock');
+      function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
   </body>
 </html>
