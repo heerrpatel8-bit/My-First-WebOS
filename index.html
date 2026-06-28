@@ -242,6 +242,7 @@
       const closeButton = document.getElementById('windowCloseButton');
       const brandToggle = document.getElementById('brandToggle');
       let isDragging = false;
+      let dragTarget = null;
       let offsetX = 0;
       let offsetY = 0;
 
@@ -255,16 +256,19 @@
         welcomeWindow.style.display = 'none';
       };
 
-      dragHandle.addEventListener('pointerdown', (event) => {
-        const rect = welcomeWindow.getBoundingClientRect();
+      function startDrag(targetWindow, handle, event) {
+        const rect = targetWindow.getBoundingClientRect();
         offsetX = event.clientX - rect.left;
         offsetY = event.clientY - rect.top;
-        welcomeWindow.style.transform = 'none';
-        welcomeWindow.style.left = `${rect.left}px`;
-        welcomeWindow.style.top = `${rect.top}px`;
+        targetWindow.style.transform = 'none';
+        targetWindow.style.left = `${rect.left}px`;
+        targetWindow.style.top = `${rect.top}px`;
         isDragging = true;
-        dragHandle.setPointerCapture(event.pointerId);
-      });
+        dragTarget = targetWindow;
+        handle.setPointerCapture(event.pointerId);
+      }
+
+      dragHandle.addEventListener('pointerdown', (event) => startDrag(welcomeWindow, dragHandle, event));
 
       closeButton.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -280,13 +284,14 @@
       });
 
       document.addEventListener('pointermove', (event) => {
-        if (!isDragging) return;
-        welcomeWindow.style.left = `${event.clientX - offsetX}px`;
-        welcomeWindow.style.top = `${event.clientY - offsetY}px`;
+        if (!isDragging || !dragTarget) return;
+        dragTarget.style.left = `${event.clientX - offsetX}px`;
+        dragTarget.style.top = `${event.clientY - offsetY}px`;
       });
 
       document.addEventListener('pointerup', () => {
         isDragging = false;
+        dragTarget = null;
       });
 
       const clockElement = document.getElementById('topbarClock');

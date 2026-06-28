@@ -1,0 +1,488 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Heer's WebOS — Cherry Desktop</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #1a0b17;
+        color: #fbe8f1;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, #ff7a9a 0%, transparent 25%),
+                    radial-gradient(circle at bottom right, #ffdee6 0%, transparent 20%),
+                    linear-gradient(135deg, #2d142b 0%, #120711 55%, #1b0d1f 100%);
+        background-attachment: fixed;
+      }
+      .page-shell {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 36px 28px;
+        gap: 28px;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        max-width: 1160px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .brand .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: #ff95b8;
+        box-shadow: 0 0 18px rgba(255,149,184,0.5);
+      }
+      .hero {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 28px;
+        border-radius: 32px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 28px 80px rgba(0,0,0,0.35);
+        backdrop-filter: blur(18px);
+      }
+      .hero h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2.6rem, 4vw, 4rem);
+        line-height: 0.98;
+      }
+      .hero p {
+        margin: 0;
+        max-width: 760px;
+        color: #f1d4e2;
+      }
+      .apps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 22px;
+        margin-top: 28px;
+      }
+      .app-card {
+        position: relative;
+        min-height: 220px;
+        padding: 22px;
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 100%);
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 18px 40px rgba(0,0,0,0.18);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+      }
+      .app-card:hover {
+        transform: translateY(-2px);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 24px 44px rgba(0,0,0,0.24);
+      }
+      .note-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(8, 4, 11, 0.85);
+        z-index: 50;
+      }
+      .note-window {
+        width: min(860px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255,247,249,0.98), rgba(255,229,236,0.96));
+        border: 1px solid rgba(255,255,255,0.32);
+        box-shadow: 0 32px 70px rgba(0,0,0,0.32);
+        overflow: hidden;
+      }
+      .note-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 22px;
+        background: rgba(31, 10, 28, 0.1);
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+      }
+      .note-header h2 {
+        margin: 0;
+        font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+        color: #2e0f1d;
+      }
+      .note-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #ffb8c7;
+        color: #4c1320;
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+      }
+      .note-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: #391b23;
+        color: #ffe6ef;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .note-close:hover {
+        background: #4f212f;
+        transform: translateY(-1px);
+      }
+      .note-content {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        max-height: calc(88vh - 80px);
+      }
+      .note-sidebar {
+        padding: 20px;
+        background: rgba(255,255,255,0.88);
+        border-right: 1px solid rgba(0,0,0,0.06);
+        overflow-y: auto;
+      }
+      .note-nav {
+        display: block;
+        margin-bottom: 14px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: #f3d9dc;
+        color: #3b121f;
+        font-weight: 700;
+      }
+      .note-nav.active {
+        background: #ffadbf;
+      }
+      .note-create {
+        margin-top: 24px;
+        padding: 18px;
+        border-radius: 22px;
+        background: rgba(31, 10, 28, 0.05);
+      }
+      .note-create label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        letter-spacing: 0.14em;
+        color: #6f3245;
+        text-transform: uppercase;
+      }
+      .note-create input,
+      .note-create textarea {
+        width: 100%;
+        border: none;
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        font: inherit;
+        background: rgba(255,255,255,0.96);
+        color: #3e1321;
+        resize: vertical;
+      }
+      .note-create textarea {
+        min-height: 98px;
+      }
+      .note-create button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 18px;
+        background: #ff5c86;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .note-preview {
+        padding: 20px 22px 22px;
+        overflow-y: auto;
+      }
+      .note-card {
+        min-height: 320px;
+        background: #f3d7db;
+        border-radius: 24px;
+        padding: 22px;
+        color: #3c1320;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .preview-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .preview-header p {
+        margin: 0;
+        color: #7a4957;
+        font-size: 0.95rem;
+      }
+      .preview-header h3 {
+        margin: 0;
+        font-size: clamp(2.2rem, 2.8vw, 3rem);
+      }
+      .preview-body {
+        margin: 18px 0 0;
+        line-height: 1.8;
+        font-size: 1.05rem;
+      }
+      .note-modal[hidden] {
+        display: none !important;
+      }
+      @media (max-width: 900px) {
+        .note-content {
+          grid-template-columns: 1fr;
+        }
+        .note-sidebar {
+          border-right: none;
+          border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .note-nav {
+          font-size: 0.98rem;
+        }
+      }
+      @media (max-width: 640px) {
+        .note-window {
+          width: calc(100% - 32px);
+          max-height: 94vh;
+        }
+        .note-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .note-header h2 {
+          font-size: 1.5rem;
+        }
+        .note-content {
+          max-height: calc(94vh - 100px);
+        }
+      }
+      .app-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top left, rgba(255,255,255,0.18), transparent 38%);
+        pointer-events: none;
+      }
+      .app-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 22px;
+        display: grid;
+        place-items: center;
+        font-size: 1.7rem;
+        margin-bottom: 18px;
+        background: rgba(255,255,255,0.16);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      }
+      .app-card strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
+      .app-card span {
+        color: #e4c2d8;
+        font-size: 0.93rem;
+        line-height: 1.5;
+      }
+      .app-card.note { background: radial-gradient(circle at top, rgba(255, 232, 242,0.8), rgba(255, 152, 175,0.25) 40%); }
+      .app-card.clicker { background: radial-gradient(circle at top right, rgba(255, 224, 239,0.88), rgba(255, 147, 185,0.18) 45%); }
+      .app-card.cursor { background: radial-gradient(circle at bottom left, rgba(255, 240, 246,0.9), rgba(255, 166, 201,0.22) 45%); }
+      .app-card.settings { background: radial-gradient(circle at 20% 20%, rgba(255, 237, 243,0.92), rgba(255, 158, 188,0.2) 45%); }
+      .app-card.terminal { background: radial-gradient(circle at 80% 15%, rgba(255, 248, 250,0.95), rgba(255, 171, 205,0.25) 45%); }
+      .app-card.screentime { background: radial-gradient(circle at bottom right, rgba(255, 243, 247,0.92), rgba(255, 133, 171,0.22) 45%); }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.14);
+        color: #ffd6e4;
+        font-size: 0.85rem;
+      }
+      .badge::before {
+        content: '🍒';
+      }
+      .footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        max-width: 1160px;
+        margin: 0 auto;
+      }
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 12px 18px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.06);
+        transition: transform 180ms ease, background 180ms ease;
+      }
+      .footer a:hover {
+        background: rgba(255,255,255,0.14);
+        transform: translateY(-1px);
+      }
+      @media (max-width: 760px) {
+        .hero {
+          padding: 24px;
+        }
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand"><span class="dot"></span>Cherry Desktop</div>
+        <div>Heer's soft, app-inspired workspace</div>
+      </header>
+
+      <section class="hero">
+        <h1>Cherry-inspired apps</h1>
+        <p>Welcome to a playful desktop that feels like soft pink glass. Tap any app to explore a little utility like note taking, focus tools, cursor flair, and screen balance.</p>
+
+        <div class="apps-grid">
+          <article class="app-card note" id="noteTakerCard">
+            <div class="app-icon">📝</div>
+            <strong>NoteTaker</strong>
+            <span>Capture ideas in a warm cherry notebook panel.</span>
+            <div class="badge">Quick note</div>
+          </article>
+
+          <article class="app-card clicker">
+            <div class="app-icon">🖱️</div>
+            <strong>Clicker</strong>
+            <span>A gentle click counter for playful interactions.</span>
+            <div class="badge">Tap rhythm</div>
+          </article>
+
+          <article class="app-card cursor">
+            <div class="app-icon">🟣</div>
+            <strong>Cursor Changer</strong>
+            <span>Change your pointer vibe with soft cherry cursors.</span>
+            <div class="badge">Style boost</div>
+          </article>
+
+          <article class="app-card settings">
+            <div class="app-icon">⚙️</div>
+            <strong>Background Settings</strong>
+            <span>Mix warm gradients and cherry tones for your screen.</span>
+            <div class="badge">Mood setter</div>
+          </article>
+
+          <article class="app-card terminal">
+            <div class="app-icon">💻</div>
+            <strong>Terminal</strong>
+            <span>A cozy command space with blush accents and calm focus.</span>
+            <div class="badge">Soft shell</div>
+          </article>
+
+          <article class="app-card screentime">
+            <div class="app-icon">⏳</div>
+            <strong>Screentime</strong>
+            <span>Track your moments with a gentle cherry timer.</span>
+            <div class="badge">Balance</div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <a href="page2.html">Back to profile</a>
+        <a href="index.html">Return home</a>
+      </footer>
+    </div>
+
+    <div class="note-modal" id="noteModal" hidden>
+      <div class="note-window">
+        <div class="note-header">
+          <div>
+            <h2>Advanced Note Taker</h2>
+            <div class="note-tag">Cherry Drafts</div>
+          </div>
+          <button class="note-close" id="noteCloseButton" aria-label="Close note window">×</button>
+        </div>
+        <div class="note-content">
+          <aside class="note-sidebar">
+            <a class="note-nav active" href="#">Welcome!</a>
+            <a class="note-nav" href="#">Project List</a>
+            <div class="note-create">
+              <label for="noteTitle">Create New Note</label>
+              <input id="noteTitle" type="text" placeholder="Note Title..." />
+              <textarea id="noteBody" placeholder="Quick starter text..."></textarea>
+              <button id="addNoteButton">+ Add Note</button>
+            </div>
+          </aside>
+          <main class="note-preview">
+            <div class="note-card">
+              <div class="preview-header">
+                <span>2025/6/12</span>
+                <p>Hi! Start Writing!</p>
+              </div>
+              <div class="preview-body" id="previewText">
+                Start Writing Here!
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const noteTakerCard = document.getElementById('noteTakerCard');
+      const noteModal = document.getElementById('noteModal');
+      const noteCloseButton = document.getElementById('noteCloseButton');
+      const addNoteButton = document.getElementById('addNoteButton');
+      const noteTitle = document.getElementById('noteTitle');
+      const noteBody = document.getElementById('noteBody');
+      const previewText = document.getElementById('previewText');
+
+      noteTakerCard.addEventListener('click', () => {
+        noteModal.hidden = false;
+      });
+
+      noteCloseButton.addEventListener('click', () => {
+        noteModal.hidden = true;
+      });
+
+      addNoteButton.addEventListener('click', () => {
+        const title = noteTitle.value.trim() || 'Untitled note';
+        const body = noteBody.value.trim() || 'Write something sweet...';
+        previewText.innerHTML = `<strong>${title}</strong><p>${body}</p>`;
+        noteTitle.value = '';
+        noteBody.value = '';
+      });
+    </script>
+  </body>
+</html>
