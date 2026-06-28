@@ -252,8 +252,286 @@
         line-height: 1.8;
         font-size: 1.05rem;
       }
-      .note-modal[hidden] {
+      .note-modal[hidden],
+      .cursor-modal[hidden],
+      .clicker-modal[hidden],
+      .settings-modal[hidden],
+      .terminal-modal[hidden] {
         display: none !important;
+      }
+      .settings-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .settings-window {
+        width: min(800px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 247, 249, 0.98), rgba(255, 229, 236, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.32);
+        overflow: hidden;
+      }
+      .settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 24px 28px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .settings-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .settings-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .settings-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .settings-body {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        overflow-y: auto;
+        max-height: calc(88vh - 90px);
+      }
+      .settings-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .settings-section h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #a01040;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .upload-area {
+        min-height: 180px;
+        border: 2px dashed rgba(216, 27, 96, 0.4);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 12px;
+        background: linear-gradient(135deg, rgba(216, 27, 96, 0.08), rgba(194, 24, 91, 0.06));
+        cursor: pointer;
+        transition: all 200ms ease;
+        color: #a01040;
+      }
+      .upload-area:hover {
+        border-color: rgba(216, 27, 96, 0.6);
+        background: linear-gradient(135deg, rgba(216, 27, 96, 0.12), rgba(194, 24, 91, 0.1));
+      }
+      .upload-area span {
+        font-size: 2rem;
+      }
+      .upload-area p {
+        margin: 0;
+        font-weight: 600;
+        text-align: center;
+        max-width: 300px;
+      }
+      .terminal-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .terminal-window {
+        width: min(900px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: #1a1a1a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      }
+      .terminal-header h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #fff;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+      }
+      .terminal-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .terminal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .terminal-body {
+        flex: 1;
+        padding: 24px;
+        font-family: 'Courier New', monospace;
+        color: #ff5c86;
+        background: #1a1a1a;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .terminal-line {
+        display: flex;
+        gap: 8px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+      .terminal-prompt {
+        color: #d81b60;
+        font-weight: 700;
+      }
+      .terminal-text {
+        color: #ff5c86;
+      }
+      .terminal-decoration {
+        color: #d81b60;
+        margin: 12px 0;
+        padding: 8px 0;
+        border-top: 1px dashed #d81b60;
+        border-bottom: 1px dashed #d81b60;
+        text-align: center;
+      }
+      .cursor-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 60;
+      }
+      .cursor-window {
+        width: min(760px, 100%);
+        max-height: 84vh;
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(255, 247, 249, 0.98), rgba(255, 229, 236, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        box-shadow: 0 36px 85px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+      }
+      .cursor-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px 24px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+      .cursor-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .cursor-header p {
+        margin: 8px 0 0;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 520px;
+      }
+      .cursor-body {
+        padding: 24px;
+        display: grid;
+        gap: 18px;
+      }
+      .cursor-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .cursor-card {
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #ff5c86 0%, #ff3366 100%);
+        border: 1px solid rgba(255, 200, 200, 0.3);
+        text-align: center;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+        font-size: 2rem;
+        color: #fff;
+      }
+      .cursor-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 32px rgba(216, 27, 96, 0.25);
+      }
+      .cursor-card span {
+        display: block;
+        margin-top: 12px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .cursor-footer {
+        padding: 0 0 20px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .cursor-footer p {
+        margin: 0;
+        color: #a01040;
+      }
+      .note-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .note-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
       }
       @media (max-width: 900px) {
         .note-content {
@@ -351,7 +629,145 @@
         background: rgba(255,255,255,0.14);
         transform: translateY(-1px);
       }
+      .clicker-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .clicker-window {
+        width: min(920px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 248, 250, 0.98), rgba(255, 230, 240, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.32);
+        overflow: hidden;
+      }
+      .clicker-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .clicker-header h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .clicker-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .clicker-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .clicker-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-height: calc(88vh - 70px);
+        padding: 24px;
+        gap: 24px;
+      }
+      .clicker-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 24px;
+        padding: 24px;
+      }
+      .clicker-image {
+        width: 180px;
+        height: 180px;
+        border-radius: 18px;
+        background: rgba(255, 240, 245, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 24px rgba(216, 27, 96, 0.15);
+      }
+      .clicker-stats {
+        text-align: center;
+        color: #a01040;
+      }
+      .clicker-stats h3 {
+        margin: 0 0 8px;
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .clicker-counter {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #d81b60;
+        margin: 0;
+      }
+      .clicker-shop {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .clicker-shop-title {
+        margin: 0 0 8px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #a01040;
+      }
+      .upgrade-card {
+        padding: 16px 20px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+        box-shadow: 0 8px 16px rgba(216, 27, 96, 0.2);
+      }
+      .upgrade-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(216, 27, 96, 0.3);
+      }
+      .upgrade-card span {
+        display: block;
+        font-size: 0.85rem;
+        opacity: 0.95;
+        margin-top: 6px;
+      }
       @media (max-width: 760px) {
+        .clicker-content {
+          grid-template-columns: 1fr;
+        }
+        .clicker-window {
+          width: calc(100% - 32px);
+          max-height: 94vh;
+        }
+        .clicker-image {
+          width: 140px;
+          height: 140px;
+          font-size: 90px;
+        }
         .hero {
           padding: 24px;
         }
@@ -366,7 +782,7 @@
     <div class="page-shell">
       <header class="topbar">
         <div class="brand"><span class="dot"></span>Cherry Desktop</div>
-        <div>Heer's soft, app-inspired workspace</div>
+        
       </header>
 
       <section class="hero">
@@ -381,28 +797,28 @@
             <div class="badge">Quick note</div>
           </article>
 
-          <article class="app-card clicker">
+          <article class="app-card clicker" id="clickerCard">
             <div class="app-icon">🖱️</div>
             <strong>Clicker</strong>
             <span>A gentle click counter for playful interactions.</span>
             <div class="badge">Tap rhythm</div>
           </article>
 
-          <article class="app-card cursor">
+          <article class="app-card cursor" id="cursorCard">
             <div class="app-icon">🟣</div>
             <strong>Cursor Changer</strong>
             <span>Change your pointer vibe with soft cherry cursors.</span>
             <div class="badge">Style boost</div>
           </article>
 
-          <article class="app-card settings">
+          <article class="app-card settings" id="settingsCard">
             <div class="app-icon">⚙️</div>
             <strong>Background Settings</strong>
             <span>Mix warm gradients and cherry tones for your screen.</span>
             <div class="badge">Mood setter</div>
           </article>
 
-          <article class="app-card terminal">
+          <article class="app-card terminal" id="terminalCard">
             <div class="app-icon">💻</div>
             <strong>Terminal</strong>
             <span>A cozy command space with blush accents and calm focus.</span>
@@ -422,6 +838,43 @@
         <a href="page2.html">Back to profile</a>
         <a href="index.html">Return home</a>
       </footer>
+    </div>
+
+    <div class="clicker-modal" id="clickerModal" hidden>
+      <div class="clicker-window">
+        <div class="clicker-header">
+          <h2>Cherry Clicker v1.5</h2>
+          <button class="clicker-close" id="clickerCloseButton" aria-label="Close clicker window">×</button>
+        </div>
+        <div class="clicker-content">
+          <div class="clicker-main">
+            <div class="clicker-image">🍒</div>
+            <div class="clicker-stats">
+              <h3>Cherries Per Second</h3>
+              <p class="clicker-counter">0</p>
+            </div>
+          </div>
+          <div class="clicker-shop">
+            <h3 class="clicker-shop-title">Cherry Shop (Upgrades)</h3>
+            <button class="upgrade-card">
+              🌾 Cherry Farm
+              <span>Cost: 15 🌿 : +1CPS</span>
+            </button>
+            <button class="upgrade-card">
+              🏠 Cherry Greenhouse
+              <span>Cost: 100 🌿 : +10CPS</span>
+            </button>
+            <button class="upgrade-card">
+              🔬 Cherry Lab
+              <span>Cost: 250 🌿 : +50CPS</span>
+            </button>
+            <button class="upgrade-card">
+              🤖 Cherry AI
+              <span>Cost: 1000 🌿 : +1500CPS</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="note-modal" id="noteModal" hidden>
@@ -459,14 +912,113 @@
       </div>
     </div>
 
+    <div class="terminal-modal" id="terminalModal" hidden>
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <h2>Cherry Terminal</h2>
+          <button class="terminal-close" id="terminalCloseButton" aria-label="Close terminal window">×</button>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-decoration">════════════════════════════════════════════════════════════</div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">></span>
+            <span class="terminal-text">CHERRY TERMINAL v2.1</span>
+          </div>
+          <div class="terminal-decoration">════════════════════════════════════════════════════════════</div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">></span>
+            <span class="terminal-text">Welcome to your cozy cherry workspace</span>
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">></span>
+            <span class="terminal-text">A soft command space with blush accents</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-modal" id="settingsModal" hidden>
+      <div class="settings-window">
+        <div class="settings-header">
+          <h2>Background Settings</h2>
+          <button class="settings-close" id="settingsCloseButton" aria-label="Close settings window">×</button>
+        </div>
+        <div class="settings-body">
+          <div class="settings-section">
+            <h3>Upload Background</h3>
+            <div class="upload-area">
+              <span>🖼️</span>
+              <p>Drag & drop an image here, or <strong>click to browse</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cursor-modal" id="cursorModal" hidden>
+      <div class="cursor-window">
+        <div class="cursor-header">
+          <div>
+            <h2>Cherry Cursor Mixer</h2>
+            <p>Choose from soft cherry cursor styles that feel bright, playful, and easy on the eyes.</p>
+          </div>
+          <button class="note-close" id="cursorCloseButton" aria-label="Close cursor window">×</button>
+        </div>
+        <div class="cursor-body">
+          <div class="cursor-grid">
+            <div class="cursor-card" data-cursor="default">
+              <div>🖱️</div>
+              <span>Classic Cherry</span>
+            </div>
+            <div class="cursor-card" data-cursor="pointer">
+              <div>✨</div>
+              <span>Berry Spark</span>
+            </div>
+            <div class="cursor-card" data-cursor="crosshair">
+              <div>🎯</div>
+              <span>Pixel Pick</span>
+            </div>
+            <div class="cursor-card" data-cursor="help">
+              <div>❓</div>
+              <span>Cherry Hint</span>
+            </div>
+            <div class="cursor-card" data-cursor="grab">
+              <div>🤲</div>
+              <span>Soft Grab</span>
+            </div>
+            <div class="cursor-card" data-cursor="move">
+              <div>🧲</div>
+              <span>Glide Mode</span>
+            </div>
+          </div>
+          <div class="cursor-footer">
+            <p>Click any style to preview it on this page. Close when you're done.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       const noteTakerCard = document.getElementById('noteTakerCard');
+      const cursorCard = document.getElementById('cursorCard');
+      const clickerCard = document.getElementById('clickerCard');
+      const settingsCard = document.getElementById('settingsCard');
+      const terminalCard = document.getElementById('terminalCard');
       const noteModal = document.getElementById('noteModal');
+      const cursorModal = document.getElementById('cursorModal');
+      const clickerModal = document.getElementById('clickerModal');
+      const settingsModal = document.getElementById('settingsModal');
+      const terminalModal = document.getElementById('terminalModal');
       const noteCloseButton = document.getElementById('noteCloseButton');
+      const cursorCloseButton = document.getElementById('cursorCloseButton');
+      const clickerCloseButton = document.getElementById('clickerCloseButton');
+      const settingsCloseButton = document.getElementById('settingsCloseButton');
+      const terminalCloseButton = document.getElementById('terminalCloseButton');
       const addNoteButton = document.getElementById('addNoteButton');
       const noteTitle = document.getElementById('noteTitle');
       const noteBody = document.getElementById('noteBody');
       const previewText = document.getElementById('previewText');
+      const cursorCards = document.querySelectorAll('.cursor-card');
 
       noteTakerCard.addEventListener('click', () => {
         noteModal.hidden = false;
@@ -476,12 +1028,74 @@
         noteModal.hidden = true;
       });
 
+      clickerCard.addEventListener('click', () => {
+        clickerModal.hidden = false;
+      });
+
+      clickerCloseButton.addEventListener('click', () => {
+        clickerModal.hidden = true;
+      });
+
+      clickerModal.addEventListener('click', (e) => {
+        if (e.target === clickerModal) {
+          clickerModal.hidden = true;
+        }
+      });
+
+      cursorCard.addEventListener('click', () => {
+        cursorModal.hidden = false;
+      });
+
+      cursorCloseButton.addEventListener('click', () => {
+        cursorModal.hidden = true;
+      });
+
+      cursorModal.addEventListener('click', (e) => {
+        if (e.target === cursorModal) {
+          cursorModal.hidden = true;
+        }
+      });
+
       addNoteButton.addEventListener('click', () => {
         const title = noteTitle.value.trim() || 'Untitled note';
         const body = noteBody.value.trim() || 'Write something sweet...';
         previewText.innerHTML = `<strong>${title}</strong><p>${body}</p>`;
         noteTitle.value = '';
         noteBody.value = '';
+      });
+
+      cursorCards.forEach((card) => {
+        card.addEventListener('click', () => {
+          document.body.style.cursor = card.dataset.cursor;
+        });
+      });
+
+      settingsCard.addEventListener('click', () => {
+        settingsModal.hidden = false;
+      });
+
+      settingsCloseButton.addEventListener('click', () => {
+        settingsModal.hidden = true;
+      });
+
+      settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+          settingsModal.hidden = true;
+        }
+      });
+
+      terminalCard.addEventListener('click', () => {
+        terminalModal.hidden = false;
+      });
+
+      terminalCloseButton.addEventListener('click', () => {
+        terminalModal.hidden = true;
+      });
+
+      terminalModal.addEventListener('click', (e) => {
+        if (e.target === terminalModal) {
+          terminalModal.hidden = true;
+        }
       });
     </script>
   </body>
