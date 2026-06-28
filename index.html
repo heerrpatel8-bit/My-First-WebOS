@@ -39,6 +39,15 @@
         letter-spacing: 0.12em;
         text-transform: uppercase;
         cursor: pointer;
+        border: none;
+        background: none;
+        padding: 0;
+        color: inherit;
+        font: inherit;
+      }
+      .topbar .label:focus {
+        outline: 2px solid rgba(0,0,0,0.18);
+        outline-offset: 3px;
       }
       .topbar .status {
         display: flex;
@@ -204,7 +213,7 @@
   </head>
   <body>
     <div class="topbar">
-      <div class="label" id="brandToggle">Heer</div>
+      <button type="button" class="label" id="brandToggle">Heer</button>
       <div class="status">
         <span class="clock" id="topbarClock">--:--</span>
         <span>☀️ Always Learning</span>
@@ -212,12 +221,13 @@
       </div>
     </div>
     <main class="hero">
-      <section class="card" id="welcomeWindow">
+      <section class="card" id="welcomeWindow" hidden>
         <div class="window-header">
           <div class="drag-area" id="windowDragHandle">
             <strong>Welcome to Heer's WebOS</strong>
             <small>Drag this window</small>
           </div>
+          <button type="button" class="window-close" id="windowCloseButton" aria-label="Close window">×</button>
         </div>
         <div class="intro">
           <p>Every expert was once a beginner.</p>
@@ -229,9 +239,21 @@
     <script>
       const welcomeWindow = document.getElementById('welcomeWindow');
       const dragHandle = document.getElementById('windowDragHandle');
+      const closeButton = document.getElementById('windowCloseButton');
+      const brandToggle = document.getElementById('brandToggle');
       let isDragging = false;
       let offsetX = 0;
       let offsetY = 0;
+
+      const openWindow = () => {
+        welcomeWindow.hidden = false;
+        welcomeWindow.style.display = 'grid';
+      };
+
+      const closeWindow = () => {
+        welcomeWindow.hidden = true;
+        welcomeWindow.style.display = 'none';
+      };
 
       dragHandle.addEventListener('pointerdown', (event) => {
         const rect = welcomeWindow.getBoundingClientRect();
@@ -242,6 +264,19 @@
         welcomeWindow.style.top = `${rect.top}px`;
         isDragging = true;
         dragHandle.setPointerCapture(event.pointerId);
+      });
+
+      closeButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        closeWindow();
+      });
+
+      brandToggle.addEventListener('click', () => {
+        if (welcomeWindow.hidden) {
+          openWindow();
+        } else {
+          closeWindow();
+        }
       });
 
       document.addEventListener('pointermove', (event) => {
