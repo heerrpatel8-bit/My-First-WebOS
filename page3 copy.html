@@ -1,0 +1,1295 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Heer's WebOS — Cherry Desktop</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: 'Inter', system-ui, sans-serif;
+        background: #1a0b17;
+        color: #fbe8f1;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, #ff7a9a 0%, transparent 25%),
+                    radial-gradient(circle at bottom right, #ffdee6 0%, transparent 20%),
+                    linear-gradient(135deg, #2d142b 0%, #120711 55%, #1b0d1f 100%);
+        background-attachment: fixed;
+      }
+      .page-shell {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 36px 28px;
+        gap: 28px;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        max-width: 1160px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .brand .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: #ff95b8;
+        box-shadow: 0 0 18px rgba(255,149,184,0.5);
+      }
+      .hero {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 28px;
+        border-radius: 32px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 28px 80px rgba(0,0,0,0.35);
+        backdrop-filter: blur(18px);
+      }
+      .hero h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2.6rem, 4vw, 4rem);
+        line-height: 0.98;
+      }
+      .hero p {
+        margin: 0;
+        max-width: 760px;
+        color: #f1d4e2;
+      }
+      .apps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 22px;
+        margin-top: 28px;
+      }
+      .app-card {
+        position: relative;
+        min-height: 220px;
+        padding: 22px;
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.06) 100%);
+        border: 1px solid rgba(255,255,255,0.14);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 18px 40px rgba(0,0,0,0.18);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+      }
+      .app-card:hover {
+        transform: translateY(-2px);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 24px 44px rgba(0,0,0,0.24);
+      }
+      .note-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(8, 4, 11, 0.85);
+        z-index: 50;
+      }
+      .note-window {
+        width: min(860px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255,247,249,0.98), rgba(255,229,236,0.96));
+        border: 1px solid rgba(255,255,255,0.32);
+        box-shadow: 0 32px 70px rgba(0,0,0,0.32);
+        overflow: hidden;
+      }
+      .note-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 22px;
+        background: rgba(31, 10, 28, 0.1);
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+      }
+      .note-header h2 {
+        margin: 0;
+        font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+        color: #2e0f1d;
+      }
+      .note-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #ffb8c7;
+        color: #4c1320;
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+      }
+      .note-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: #391b23;
+        color: #ffe6ef;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .note-close:hover {
+        background: #4f212f;
+        transform: translateY(-1px);
+      }
+      .note-content {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        max-height: calc(88vh - 80px);
+      }
+      .note-sidebar {
+        padding: 20px;
+        background: rgba(255,255,255,0.88);
+        border-right: 1px solid rgba(0,0,0,0.06);
+        overflow-y: auto;
+      }
+      .note-nav {
+        display: block;
+        margin-bottom: 14px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: #f3d9dc;
+        color: #3b121f;
+        font-weight: 700;
+      }
+      .note-nav.active {
+        background: #ffadbf;
+      }
+      .note-create {
+        margin-top: 24px;
+        padding: 18px;
+        border-radius: 22px;
+        background: rgba(31, 10, 28, 0.05);
+      }
+      .note-create label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        letter-spacing: 0.14em;
+        color: #6f3245;
+        text-transform: uppercase;
+      }
+      .note-create input,
+      .note-create textarea {
+        width: 100%;
+        border: none;
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        font: inherit;
+        background: rgba(255,255,255,0.96);
+        color: #3e1321;
+        resize: vertical;
+      }
+      .note-create textarea {
+        min-height: 98px;
+      }
+      .note-create button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 18px;
+        background: #ff5c86;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .note-preview {
+        padding: 20px 22px 22px;
+        overflow-y: auto;
+      }
+      .note-card {
+        min-height: 320px;
+        background: #f3d7db;
+        border-radius: 24px;
+        padding: 22px;
+        color: #3c1320;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .preview-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .preview-header p {
+        margin: 0;
+        color: #7a4957;
+        font-size: 0.95rem;
+      }
+      .preview-header h3 {
+        margin: 0;
+        font-size: clamp(2.2rem, 2.8vw, 3rem);
+      }
+      .preview-body {
+        margin: 18px 0 0;
+        line-height: 1.8;
+        font-size: 1.05rem;
+      }
+      .note-modal[hidden],
+      .cursor-modal[hidden],
+      .clicker-modal[hidden],
+      .settings-modal[hidden],
+      .terminal-modal[hidden],
+      .screentime-modal[hidden] {
+        display: none !important;
+      }
+      .settings-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .settings-window {
+        width: min(800px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 247, 249, 0.98), rgba(255, 229, 236, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.32);
+        overflow: hidden;
+      }
+      .settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 24px 28px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .settings-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .settings-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .settings-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .settings-body {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        overflow-y: auto;
+        max-height: calc(88vh - 90px);
+      }
+      .settings-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .settings-section h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #a01040;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .upload-area {
+        min-height: 180px;
+        border: 2px dashed rgba(216, 27, 96, 0.4);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 12px;
+        background: linear-gradient(135deg, rgba(216, 27, 96, 0.08), rgba(194, 24, 91, 0.06));
+        cursor: pointer;
+        transition: all 200ms ease;
+        color: #a01040;
+      }
+      .upload-area:hover {
+        border-color: rgba(216, 27, 96, 0.6);
+        background: linear-gradient(135deg, rgba(216, 27, 96, 0.12), rgba(194, 24, 91, 0.1));
+      }
+      .upload-area span {
+        font-size: 2rem;
+      }
+      .upload-area p {
+        margin: 0;
+        font-weight: 600;
+        text-align: center;
+        max-width: 300px;
+      }
+      .terminal-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .terminal-window {
+        width: min(900px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: #1a1a1a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      }
+      .terminal-header h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #fff;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+      }
+      .terminal-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .terminal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .terminal-body {
+        flex: 1;
+        padding: 24px;
+        font-family: 'Courier New', monospace;
+        color: #ff5c86;
+        background: #1a1a1a;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .terminal-line {
+        display: flex;
+        gap: 8px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+      .terminal-prompt {
+        color: #d81b60;
+        font-weight: 700;
+      }
+      .terminal-text {
+        color: #ff5c86;
+      }
+      .terminal-decoration {
+        color: #d81b60;
+        margin: 12px 0;
+        padding: 8px 0;
+        border-top: 1px dashed #d81b60;
+        border-bottom: 1px dashed #d81b60;
+        text-align: center;
+      }
+      .cursor-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 60;
+      }
+      .cursor-window {
+        width: min(760px, 100%);
+        max-height: 84vh;
+        border-radius: 30px;
+        background: linear-gradient(180deg, rgba(255, 247, 249, 0.98), rgba(255, 229, 236, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        box-shadow: 0 36px 85px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+      }
+      .cursor-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px 24px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+      .cursor-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .cursor-header p {
+        margin: 8px 0 0;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 520px;
+      }
+      .cursor-body {
+        padding: 24px;
+        display: grid;
+        gap: 18px;
+      }
+      .cursor-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .cursor-card {
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #ff5c86 0%, #ff3366 100%);
+        border: 1px solid rgba(255, 200, 200, 0.3);
+        text-align: center;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+        font-size: 2rem;
+        color: #fff;
+      }
+      .cursor-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 32px rgba(216, 27, 96, 0.25);
+      }
+      .screentime-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .screentime-window {
+        width: min(500px, 100%);
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 243, 247, 0.98), rgba(255, 229, 236, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.32);
+        overflow: hidden;
+      }
+      .screentime-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 24px 28px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .screentime-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .screentime-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .screentime-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .screentime-body {
+        padding: 48px 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+      }
+      .timer-display {
+        font-size: 4rem;
+        font-weight: 700;
+        color: #a01040;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.1em;
+        min-height: 5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .timer-controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .timer-button {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 200ms ease;
+        font-size: 1rem;
+      }
+      .timer-button.start {
+        background: #ff5c86;
+        color: #fff;
+      }
+      .timer-button.start:hover {
+        background: #ff3d6f;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(255, 92, 134, 0.3);
+      }
+      .timer-button.pause {
+        background: #ffb8c7;
+        color: #a01040;
+      }
+      .timer-button.pause:hover {
+        background: #ff9eb5;
+        transform: translateY(-2px);
+      }
+      .timer-button.reset {
+        background: rgba(160, 16, 64, 0.2);
+        color: #a01040;
+        border: 1px solid rgba(160, 16, 64, 0.3);
+      }
+      .timer-button.reset:hover {
+        background: rgba(160, 16, 64, 0.3);
+        transform: translateY(-2px);
+      }
+      .cursor-card span {
+        display: block;
+        margin-top: 12px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .cursor-footer {
+        padding: 0 0 20px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .cursor-footer p {
+        margin: 0;
+        color: #a01040;
+      }
+      .note-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .note-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      @media (max-width: 900px) {
+        .note-content {
+          grid-template-columns: 1fr;
+        }
+        .note-sidebar {
+          border-right: none;
+          border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .note-nav {
+          font-size: 0.98rem;
+        }
+      }
+      @media (max-width: 640px) {
+        .note-window {
+          width: calc(100% - 32px);
+          max-height: 94vh;
+        }
+        .note-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .note-header h2 {
+          font-size: 1.5rem;
+        }
+        .note-content {
+          max-height: calc(94vh - 100px);
+        }
+      }
+      .app-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top left, rgba(255,255,255,0.18), transparent 38%);
+        pointer-events: none;
+      }
+      .app-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 22px;
+        display: grid;
+        place-items: center;
+        font-size: 1.7rem;
+        margin-bottom: 18px;
+        background: rgba(255,255,255,0.16);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      }
+      .app-card strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
+      .app-card span {
+        color: #e4c2d8;
+        font-size: 0.93rem;
+        line-height: 1.5;
+      }
+      .app-card.note { background: radial-gradient(circle at top, rgba(255, 232, 242,0.8), rgba(255, 152, 175,0.25) 40%); }
+      .app-card.clicker { background: radial-gradient(circle at top right, rgba(255, 224, 239,0.88), rgba(255, 147, 185,0.18) 45%); }
+      .app-card.cursor { background: radial-gradient(circle at bottom left, rgba(255, 240, 246,0.9), rgba(255, 166, 201,0.22) 45%); }
+      .app-card.settings { background: radial-gradient(circle at 20% 20%, rgba(255, 237, 243,0.92), rgba(255, 158, 188,0.2) 45%); }
+      .app-card.terminal { background: radial-gradient(circle at 80% 15%, rgba(255, 248, 250,0.95), rgba(255, 171, 205,0.25) 45%); }
+      .app-card.screentime { background: radial-gradient(circle at bottom right, rgba(255, 243, 247,0.92), rgba(255, 133, 171,0.22) 45%); }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.14);
+        color: #ffd6e4;
+        font-size: 0.85rem;
+      }
+      .badge::before {
+        content: '🍒';
+      }
+      .footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        max-width: 1160px;
+        margin: 0 auto;
+      }
+      .footer a {
+        color: #fff;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 12px 18px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.06);
+        transition: transform 180ms ease, background 180ms ease;
+      }
+      .footer a:hover {
+        background: rgba(255,255,255,0.14);
+        transform: translateY(-1px);
+      }
+      .clicker-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .clicker-window {
+        width: min(920px, 100%);
+        max-height: 88vh;
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 248, 250, 0.98), rgba(255, 230, 240, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.32);
+        overflow: hidden;
+      }
+      .clicker-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      .clicker-header h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .clicker-close {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .clicker-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      .clicker-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-height: calc(88vh - 70px);
+        padding: 24px;
+        gap: 24px;
+      }
+      .clicker-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 24px;
+        padding: 24px;
+      }
+      .clicker-image {
+        width: 180px;
+        height: 180px;
+        border-radius: 18px;
+        background: rgba(255, 240, 245, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 24px rgba(216, 27, 96, 0.15);
+      }
+      .clicker-stats {
+        text-align: center;
+        color: #a01040;
+      }
+      .clicker-stats h3 {
+        margin: 0 0 8px;
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .clicker-counter {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #d81b60;
+        margin: 0;
+      }
+      .clicker-shop {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .clicker-shop-title {
+        margin: 0 0 8px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #a01040;
+      }
+      .upgrade-card {
+        padding: 16px 20px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: transform 180ms ease, box-shadow 180ms ease;
+        box-shadow: 0 8px 16px rgba(216, 27, 96, 0.2);
+      }
+      .upgrade-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(216, 27, 96, 0.3);
+      }
+      .upgrade-card span {
+        display: block;
+        font-size: 0.85rem;
+        opacity: 0.95;
+        margin-top: 6px;
+      }
+      @media (max-width: 760px) {
+        .clicker-content {
+          grid-template-columns: 1fr;
+        }
+        .clicker-window {
+          width: calc(100% - 32px);
+          max-height: 94vh;
+        }
+        .clicker-image {
+          width: 140px;
+          height: 140px;
+          font-size: 90px;
+        }
+        .hero {
+          padding: 24px;
+        }
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand"><span class="dot"></span>Cherry Desktop</div>
+        
+      </header>
+
+      <section class="hero">
+        <h1>Cherry-inspired apps</h1>
+        <p>Welcome to a playful desktop that feels like soft pink glass. Tap any app to explore a little utility like note taking, focus tools, cursor flair, and screen balance.</p>
+
+        <div class="apps-grid">
+          <article class="app-card note" id="noteTakerCard">
+            <div class="app-icon">📝</div>
+            <strong>NoteTaker</strong>
+            <span>Capture ideas in a warm cherry notebook panel.</span>
+            <div class="badge">Quick note</div>
+          </article>
+
+          <article class="app-card clicker" id="clickerCard">
+            <div class="app-icon">🖱️</div>
+            <strong>Clicker</strong>
+            <span>A gentle click counter for playful interactions.</span>
+            <div class="badge">Tap rhythm</div>
+          </article>
+
+          <article class="app-card cursor" id="cursorCard">
+            <div class="app-icon">🟣</div>
+            <strong>Cursor Changer</strong>
+            <span>Change your pointer vibe with soft cherry cursors.</span>
+            <div class="badge">Style boost</div>
+          </article>
+
+          <article class="app-card settings" id="settingsCard">
+            <div class="app-icon">⚙️</div>
+            <strong>Background Settings</strong>
+            <span>Mix warm gradients and cherry tones for your screen.</span>
+            <div class="badge">Mood setter</div>
+          </article>
+
+          <article class="app-card terminal" id="terminalCard">
+            <div class="app-icon">💻</div>
+            <strong>Terminal</strong>
+            <span>A cozy command space with blush accents and calm focus.</span>
+            <div class="badge">Soft shell</div>
+          </article>
+
+          <article class="app-card screentime" id="screentimeCard">
+            <div class="app-icon">⏳</div>
+            <strong>Screentime</strong>
+            <span>Track your moments with a gentle cherry timer.</span>
+            <div class="badge">Balance</div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <a href="page2.html">Back to profile</a>
+        <a href="index.html">Return home</a>
+      </footer>
+    </div>
+
+    <div class="clicker-modal" id="clickerModal" hidden>
+      <div class="clicker-window">
+        <div class="clicker-header">
+          <h2>Cherry Clicker v1.5</h2>
+          <button class="clicker-close" id="clickerCloseButton" aria-label="Close clicker window">×</button>
+        </div>
+        <div class="clicker-content">
+          <div class="clicker-main">
+            <div class="clicker-image">🍒</div>
+            <div class="clicker-stats">
+              <h3>Cherries Per Second</h3>
+              <p class="clicker-counter">0</p>
+            </div>
+          </div>
+          <div class="clicker-shop">
+            <h3 class="clicker-shop-title">Cherry Shop (Upgrades)</h3>
+            <button class="upgrade-card">
+              🌾 Cherry Farm
+              <span>Cost: 15 🌿 : +1CPS</span>
+            </button>
+            <button class="upgrade-card">
+              🏠 Cherry Greenhouse
+              <span>Cost: 100 🌿 : +10CPS</span>
+            </button>
+            <button class="upgrade-card">
+              🔬 Cherry Lab
+              <span>Cost: 250 🌿 : +50CPS</span>
+            </button>
+            <button class="upgrade-card">
+              🤖 Cherry AI
+              <span>Cost: 1000 🌿 : +1500CPS</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-modal" id="noteModal" hidden>
+      <div class="note-window">
+        <div class="note-header">
+          <div>
+            <h2>Advanced Note Taker</h2>
+            <div class="note-tag">Cherry Drafts</div>
+          </div>
+          <button class="note-close" id="noteCloseButton" aria-label="Close note window">×</button>
+        </div>
+        <div class="note-content">
+          <aside class="note-sidebar">
+            <a class="note-nav active" href="#">Welcome!</a>
+            <a class="note-nav" href="#">Project List</a>
+            <div class="note-create">
+              <label for="noteTitle">Create New Note</label>
+              <input id="noteTitle" type="text" placeholder="Note Title..." />
+              <textarea id="noteBody" placeholder="Quick starter text..."></textarea>
+              <button id="addNoteButton">+ Add Note</button>
+            </div>
+          </aside>
+          <main class="note-preview">
+            <div class="note-card">
+              <div class="preview-header">
+                <span>2025/6/12</span>
+                <p>Hi! Start Writing!</p>
+              </div>
+              <div class="preview-body" id="previewText">
+                Start Writing Here!
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <div class="terminal-modal" id="terminalModal" hidden>
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <h2>Cherry Terminal</h2>
+          <button class="terminal-close" id="terminalCloseButton" aria-label="Close terminal window">×</button>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-decoration">════════════════════════════════════════════════════════════</div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">></span>
+            <span class="terminal-text">CHERRY TERMINAL v2.1</span>
+          </div>
+          <div class="terminal-decoration">════════════════════════════════════════════════════════════</div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">></span>
+            <span class="terminal-text">Welcome to your cozy cherry workspace</span>
+          </div>
+          <div class="terminal-line">
+            <span class="terminal-prompt">></span>
+            <span class="terminal-text">A soft command space with blush accents</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-modal" id="settingsModal" hidden>
+      <div class="settings-window">
+        <div class="settings-header">
+          <h2>Background Settings</h2>
+          <button class="settings-close" id="settingsCloseButton" aria-label="Close settings window">×</button>
+        </div>
+        <div class="settings-body">
+          <div class="settings-section">
+            <h3>Upload Background</h3>
+            <div class="upload-area">
+              <span>🖼️</span>
+              <p>Drag & drop an image here, or <strong>click to browse</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cursor-modal" id="cursorModal" hidden>
+      <div class="cursor-window">
+        <div class="cursor-header">
+          <div>
+            <h2>Cherry Cursor Mixer</h2>
+            <p>Choose from soft cherry cursor styles that feel bright, playful, and easy on the eyes.</p>
+          </div>
+          <button class="note-close" id="cursorCloseButton" aria-label="Close cursor window">×</button>
+        </div>
+        <div class="cursor-body">
+          <div class="cursor-grid">
+            <div class="cursor-card" data-cursor="default">
+              <div>🖱️</div>
+              <span>Classic Cherry</span>
+            </div>
+            <div class="cursor-card" data-cursor="pointer">
+              <div>✨</div>
+              <span>Berry Spark</span>
+            </div>
+            <div class="cursor-card" data-cursor="crosshair">
+              <div>🎯</div>
+              <span>Pixel Pick</span>
+            </div>
+            <div class="cursor-card" data-cursor="help">
+              <div>❓</div>
+              <span>Cherry Hint</span>
+            </div>
+            <div class="cursor-card" data-cursor="grab">
+              <div>🤲</div>
+              <span>Soft Grab</span>
+            </div>
+            <div class="cursor-card" data-cursor="move">
+              <div>🧲</div>
+              <span>Glide Mode</span>
+            </div>
+          </div>
+          <div class="cursor-footer">
+            <p>Click any style to preview it on this page. Close when you're done.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screentime-modal" id="screentimeModal" hidden>
+      <div class="screentime-window">
+        <div class="screentime-header">
+          <h2>Screentime Timer</h2>
+          <button class="screentime-close" id="screentimeCloseButton" aria-label="Close screentime window">×</button>
+        </div>
+        <div class="screentime-body">
+          <div class="timer-display" id="timerDisplay">00:00:00</div>
+          <div class="timer-controls">
+            <button class="timer-button start" id="timerStartButton">Start</button>
+            <button class="timer-button pause" id="timerPauseButton">Pause</button>
+            <button class="timer-button reset" id="timerResetButton">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const noteTakerCard = document.getElementById('noteTakerCard');
+      const cursorCard = document.getElementById('cursorCard');
+      const clickerCard = document.getElementById('clickerCard');
+      const settingsCard = document.getElementById('settingsCard');
+      const terminalCard = document.getElementById('terminalCard');
+      const screentimeCard = document.getElementById('screentimeCard');
+      const noteModal = document.getElementById('noteModal');
+      const cursorModal = document.getElementById('cursorModal');
+      const clickerModal = document.getElementById('clickerModal');
+      const settingsModal = document.getElementById('settingsModal');
+      const terminalModal = document.getElementById('terminalModal');
+      const screentimeModal = document.getElementById('screentimeModal');
+      const noteCloseButton = document.getElementById('noteCloseButton');
+      const cursorCloseButton = document.getElementById('cursorCloseButton');
+      const clickerCloseButton = document.getElementById('clickerCloseButton');
+      const settingsCloseButton = document.getElementById('settingsCloseButton');
+      const terminalCloseButton = document.getElementById('terminalCloseButton');
+      const screentimeCloseButton = document.getElementById('screentimeCloseButton');
+      const addNoteButton = document.getElementById('addNoteButton');
+      const noteTitle = document.getElementById('noteTitle');
+      const noteBody = document.getElementById('noteBody');
+      const previewText = document.getElementById('previewText');
+      const cursorCards = document.querySelectorAll('.cursor-card');
+      const timerDisplay = document.getElementById('timerDisplay');
+      const timerStartButton = document.getElementById('timerStartButton');
+      const timerPauseButton = document.getElementById('timerPauseButton');
+      const timerResetButton = document.getElementById('timerResetButton');
+
+      let timerInterval = null;
+      let timerSeconds = 0;
+      let isRunning = false;
+
+      function formatTime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+
+      function startTimer() {
+        if (!isRunning) {
+          isRunning = true;
+          timerInterval = setInterval(() => {
+            timerSeconds++;
+            timerDisplay.textContent = formatTime(timerSeconds);
+          }, 1000);
+        }
+      }
+
+      function pauseTimer() {
+        isRunning = false;
+        if (timerInterval) {
+          clearInterval(timerInterval);
+        }
+      }
+
+      function resetTimer() {
+        pauseTimer();
+        timerSeconds = 0;
+        timerDisplay.textContent = formatTime(timerSeconds);
+      }
+
+      noteTakerCard.addEventListener('click', () => {
+        noteModal.hidden = false;
+      });
+
+      noteCloseButton.addEventListener('click', () => {
+        noteModal.hidden = true;
+      });
+
+      clickerCard.addEventListener('click', () => {
+        clickerModal.hidden = false;
+      });
+
+      clickerCloseButton.addEventListener('click', () => {
+        clickerModal.hidden = true;
+      });
+
+      clickerModal.addEventListener('click', (e) => {
+        if (e.target === clickerModal) {
+          clickerModal.hidden = true;
+        }
+      });
+
+      cursorCard.addEventListener('click', () => {
+        cursorModal.hidden = false;
+      });
+
+      cursorCloseButton.addEventListener('click', () => {
+        cursorModal.hidden = true;
+      });
+
+      cursorModal.addEventListener('click', (e) => {
+        if (e.target === cursorModal) {
+          cursorModal.hidden = true;
+        }
+      });
+
+      addNoteButton.addEventListener('click', () => {
+        const title = noteTitle.value.trim() || 'Untitled note';
+        const body = noteBody.value.trim() || 'Write something sweet...';
+        previewText.innerHTML = `<strong>${title}</strong><p>${body}</p>`;
+        noteTitle.value = '';
+        noteBody.value = '';
+      });
+
+      cursorCards.forEach((card) => {
+        card.addEventListener('click', () => {
+          document.body.style.cursor = card.dataset.cursor;
+        });
+      });
+
+      settingsCard.addEventListener('click', () => {
+        settingsModal.hidden = false;
+      });
+
+      settingsCloseButton.addEventListener('click', () => {
+        settingsModal.hidden = true;
+      });
+
+      settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) {
+          settingsModal.hidden = true;
+        }
+      });
+
+      terminalCard.addEventListener('click', () => {
+        terminalModal.hidden = false;
+      });
+
+      terminalCloseButton.addEventListener('click', () => {
+        terminalModal.hidden = true;
+      });
+
+      terminalModal.addEventListener('click', (e) => {
+        if (e.target === terminalModal) {
+          terminalModal.hidden = true;
+        }
+      });
+
+      screentimeCard.addEventListener('click', () => {
+        screentimeModal.hidden = false;
+      });
+
+      screentimeCloseButton.addEventListener('click', () => {
+        screentimeModal.hidden = true;
+      });
+
+      screentimeModal.addEventListener('click', (e) => {
+        if (e.target === screentimeModal) {
+          screentimeModal.hidden = true;
+        }
+      });
+
+      timerStartButton.addEventListener('click', () => {
+        startTimer();
+      });
+
+      timerPauseButton.addEventListener('click', () => {
+        pauseTimer();
+      });
+
+      timerResetButton.addEventListener('click', () => {
+        resetTimer();
+      });
+    </script>
+  </body> 
+</html>
+
+
