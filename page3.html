@@ -256,7 +256,8 @@
       .cursor-modal[hidden],
       .clicker-modal[hidden],
       .settings-modal[hidden],
-      .terminal-modal[hidden] {
+      .terminal-modal[hidden],
+      .screentime-modal[hidden] {
         display: none !important;
       }
       .settings-modal {
@@ -638,7 +639,17 @@
         background: rgba(12, 5, 12, 0.88);
         z-index: 50;
       }
-      .clicker-window {
+      .screentime-modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(12, 5, 12, 0.88);
+        z-index: 50;
+      }
+      .clicker-window,
+      .screentime-window {
         width: min(920px, 100%);
         max-height: 88vh;
         border-radius: 28px;
@@ -647,7 +658,8 @@
         box-shadow: 0 32px 70px rgba(0, 0, 0, 0.32);
         overflow: hidden;
       }
-      .clicker-header {
+      .clicker-header,
+      .screentime-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -656,13 +668,15 @@
         background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%);
         border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       }
-      .clicker-header h2 {
+      .clicker-header h2,
+      .screentime-header h2 {
         margin: 0;
         font-size: 1.6rem;
         color: #fff;
         font-weight: 700;
       }
-      .clicker-close {
+      .clicker-close,
+      .screentime-close {
         width: 40px;
         height: 40px;
         border: none;
@@ -673,7 +687,8 @@
         cursor: pointer;
         transition: transform 160ms ease, background 160ms ease;
       }
-      .clicker-close:hover {
+      .clicker-close:hover,
+      .screentime-close:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: translateY(-1px);
       }
@@ -683,6 +698,41 @@
         max-height: calc(88vh - 70px);
         padding: 24px;
         gap: 24px;
+      }
+      .screentime-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        padding: 30px 24px 32px;
+        background: linear-gradient(180deg, rgba(255, 248, 250, 0.98), rgba(255, 230, 240, 0.96));
+      }
+      .screentime-display {
+        font-size: clamp(3.4rem, 8vw, 5.6rem);
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        color: #d81b60;
+        font-variant-numeric: tabular-nums;
+      }
+      .screentime-controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .screentime-btn {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 18px;
+        background: #d81b60;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .screentime-btn.secondary {
+        background: #f3d7db;
+        color: #8a2341;
       }
       .clicker-main {
         display: flex;
@@ -825,7 +875,7 @@
             <div class="badge">Soft shell</div>
           </article>
 
-          <article class="app-card screentime">
+          <article class="app-card screentime" id="screentimeCard">
             <div class="app-icon">⏳</div>
             <strong>Screentime</strong>
             <span>Track your moments with a gentle cherry timer.</span>
@@ -873,6 +923,24 @@
               <span>Cost: 1000 🌿 : +1500CPS</span>
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screentime-modal" id="screentimeModal" hidden>
+      <div class="screentime-window">
+        <div class="screentime-header">
+          <h2>Cherry Screentime</h2>
+          <button class="screentime-close" id="screentimeCloseButton" aria-label="Close screentime window">×</button>
+        </div>
+        <div class="screentime-content">
+          <div class="screentime-display" id="screentimeDisplay">00:00:00</div>
+          <div class="screentime-controls">
+            <button class="screentime-btn" id="startTimerButton">Start</button>
+            <button class="screentime-btn secondary" id="pauseTimerButton">Pause</button>
+            <button class="screentime-btn secondary" id="resetTimerButton">Reset</button>
+          </div>
+          <p style="margin:0;color:#8a2341;text-align:center;">A soft timer for calm focus sessions and screen balance.</p>
         </div>
       </div>
     </div>
@@ -1004,16 +1072,23 @@
       const clickerCard = document.getElementById('clickerCard');
       const settingsCard = document.getElementById('settingsCard');
       const terminalCard = document.getElementById('terminalCard');
+      const screentimeCard = document.getElementById('screentimeCard');
       const noteModal = document.getElementById('noteModal');
       const cursorModal = document.getElementById('cursorModal');
       const clickerModal = document.getElementById('clickerModal');
       const settingsModal = document.getElementById('settingsModal');
       const terminalModal = document.getElementById('terminalModal');
+      const screentimeModal = document.getElementById('screentimeModal');
       const noteCloseButton = document.getElementById('noteCloseButton');
       const cursorCloseButton = document.getElementById('cursorCloseButton');
       const clickerCloseButton = document.getElementById('clickerCloseButton');
       const settingsCloseButton = document.getElementById('settingsCloseButton');
       const terminalCloseButton = document.getElementById('terminalCloseButton');
+      const screentimeCloseButton = document.getElementById('screentimeCloseButton');
+      const startTimerButton = document.getElementById('startTimerButton');
+      const pauseTimerButton = document.getElementById('pauseTimerButton');
+      const resetTimerButton = document.getElementById('resetTimerButton');
+      const screentimeDisplay = document.getElementById('screentimeDisplay');
       const addNoteButton = document.getElementById('addNoteButton');
       const noteTitle = document.getElementById('noteTitle');
       const noteBody = document.getElementById('noteBody');
@@ -1097,6 +1172,61 @@
           terminalModal.hidden = true;
         }
       });
+
+      let elapsedSeconds = 0;
+      let timerInterval = null;
+      let isTimerRunning = false;
+
+      function updateTimerDisplay() {
+        const hours = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+        const seconds = String(elapsedSeconds % 60).padStart(2, '0');
+        screentimeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+      }
+
+      function stopTimer() {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+        isTimerRunning = false;
+      }
+
+      function startTimer() {
+        if (isTimerRunning) return;
+        isTimerRunning = true;
+        timerInterval = setInterval(() => {
+          elapsedSeconds += 1;
+          updateTimerDisplay();
+        }, 1000);
+      }
+
+      screentimeCard.addEventListener('click', () => {
+        screentimeModal.hidden = false;
+        updateTimerDisplay();
+      });
+
+      screentimeCloseButton.addEventListener('click', () => {
+        screentimeModal.hidden = true;
+        stopTimer();
+      });
+
+      screentimeModal.addEventListener('click', (e) => {
+        if (e.target === screentimeModal) {
+          screentimeModal.hidden = true;
+          stopTimer();
+        }
+      });
+
+      startTimerButton.addEventListener('click', startTimer);
+      pauseTimerButton.addEventListener('click', stopTimer);
+      resetTimerButton.addEventListener('click', () => {
+        stopTimer();
+        elapsedSeconds = 0;
+        updateTimerDisplay();
+      });
+
+      updateTimerDisplay();
     </script>
   </body>
 </html>
