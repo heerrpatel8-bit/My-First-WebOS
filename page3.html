@@ -592,7 +592,7 @@
       }
       .app-card.note { background: radial-gradient(circle at top, rgba(255, 232, 242,0.8), rgba(255, 152, 175,0.25) 40%); }
       .app-card.clicker { background: radial-gradient(circle at top right, rgba(255, 224, 239,0.88), rgba(255, 147, 185,0.18) 45%); }
-      .app-card.cursor { background: radial-gradient(circle at bottom left, rgba(255, 240, 246,0.9), rgba(255, 166, 201,0.22) 45%); }
+      .app-card.music { background: radial-gradient(circle at bottom left, rgba(255, 240, 246,0.9), rgba(255, 166, 201,0.22) 45%); }
       .app-card.settings { background: radial-gradient(circle at 20% 20%, rgba(255, 237, 243,0.92), rgba(255, 158, 188,0.2) 45%); }
       .app-card.terminal { background: radial-gradient(circle at 80% 15%, rgba(255, 248, 250,0.95), rgba(255, 171, 205,0.25) 45%); }
       .app-card.screentime { background: radial-gradient(circle at bottom right, rgba(255, 243, 247,0.92), rgba(255, 133, 171,0.22) 45%); }
@@ -854,11 +854,11 @@
             <div class="badge">Tap rhythm</div>
           </article>
 
-          <article class="app-card cursor" id="cursorCard">
-            <div class="app-icon">🟣</div>
-            <strong>Cursor Changer</strong>
-            <span>Change your pointer vibe with soft cherry cursors.</span>
-            <div class="badge">Style boost</div>
+          <article class="app-card music" id="musicCard">
+            <div class="app-icon">🎵</div>
+            <strong>Music Player</strong>
+            <span>Play your favorite tunes with a soft cherry player.</span>
+            <div class="badge">Sound vibes</div>
           </article>
 
           <article class="app-card settings" id="settingsCard">
@@ -1023,44 +1023,75 @@
       </div>
     </div>
 
-    <div class="cursor-modal" id="cursorModal" hidden>
-      <div class="cursor-window">
-        <div class="cursor-header">
-          <div>
-            <h2>Cherry Cursor Mixer</h2>
-            <p>Choose from soft cherry cursor styles that feel bright, playful, and easy on the eyes.</p>
-          </div>
-          <button class="note-close" id="cursorCloseButton" aria-label="Close cursor window">×</button>
+    <div class="cursor-modal" id="musicModal" hidden>
+      <div style="width: min(700px, 100%); max-height: 84vh; border-radius: 30px; background: linear-gradient(180deg, #1a0f15 0%, #2d1620 100%); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 36px 85px rgba(0, 0, 0, 0.5); overflow: hidden; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; background: linear-gradient(135deg, #d81b60 0%, #c2185b 100%); border-bottom: 1px solid rgba(0, 0, 0, 0.2);">
+          <h2 style="margin: 0; font-size: 1.8rem; color: #fff; font-weight: 700;">Music Player</h2>
+          <button class="note-close" id="musicCloseButton" aria-label="Close music window" style="background: rgba(255, 255, 255, 0.2); color: #fff;">×</button>
         </div>
-        <div class="cursor-body">
-          <div class="cursor-grid">
-            <div class="cursor-card" data-cursor="default">
-              <div>🖱️</div>
-              <span>Classic Cherry</span>
+        <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column;">
+          <div style="padding: 40px 32px; text-align: center;">
+            <div style="margin-bottom: 24px;">
+              <div id="albumArt" style="width: 200px; height: 200px; margin: 0 auto 20px; border-radius: 20px; background: linear-gradient(135deg, #ff5c86, #d81b60); display: flex; align-items: center; justify-content: center; font-size: 80px; box-shadow: 0 20px 40px rgba(216, 27, 96, 0.3); color: #fff;">🎵</div>
             </div>
-            <div class="cursor-card" data-cursor="pointer">
-              <div>✨</div>
-              <span>Berry Spark</span>
+            <div style="margin-bottom: 24px;">
+              <h3 style="margin: 0 0 4px; color: #fff; font-size: 1.4rem; font-weight: 700;" id="trackTitle">Cruel Angel's Thesis</h3>
+              <p style="margin: 0; color: #ff95b8; font-size: 0.95rem;" id="trackArtist">Evangelion</p>
             </div>
-            <div class="cursor-card" data-cursor="crosshair">
-              <div>🎯</div>
-              <span>Pixel Pick</span>
+            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+              <div id="progressFull" style="height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; margin-bottom: 12px; cursor: pointer;">
+                <div id="progressBar" style="height: 100%; background: linear-gradient(90deg, #d81b60, #ff5c86); width: 0%; transition: width 0.1s;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #999;">
+                <span id="currentTime">0:00</span>
+                <span id="duration">4:12</span>
+              </div>
             </div>
-            <div class="cursor-card" data-cursor="help">
-              <div>❓</div>
-              <span>Cherry Hint</span>
-            </div>
-            <div class="cursor-card" data-cursor="grab">
-              <div>🤲</div>
-              <span>Soft Grab</span>
-            </div>
-            <div class="cursor-card" data-cursor="move">
-              <div>🧲</div>
-              <span>Glide Mode</span>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 24px;">
+              <button id="prevBtn" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); color: #fff; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; transition: all 200ms;">⏮</button>
+              <button id="playBtn" style="width: 80px; height: 80px; border-radius: 50%; border: none; background: linear-gradient(135deg, #d81b60, #ff5c86); color: #fff; cursor: pointer; font-size: 2rem; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 200ms; box-shadow: 0 10px 30px rgba(216, 27, 96, 0.4);">▶</button>
+              <button id="nextBtn" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); color: #fff; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; transition: all 200ms;">⏭</button>
             </div>
           </div>
-          <div class="cursor-footer">
-            <p>Click any style to preview it on this page. Close when you're done.</p>
+          <div style="padding: 0 32px 32px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <h4 style="margin: 0 0 16px; color: #999; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;">PLAYLIST (6)</h4>
+            <div style="display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto;">
+              <div class="playlist-item" style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: rgba(216, 27, 96, 0.15); cursor: pointer; transition: all 200ms; border-left: 3px solid #d81b60;">
+                <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #ff5c86, #d81b60); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; flex-shrink: 0;">🎵</div>
+                <div style="flex: 1;">
+                  <p style="margin: 0; color: #fff; font-weight: 600; font-size: 0.95rem;">Cruel Angel's Thesis</p>
+                  <p style="margin: 0; color: #999; font-size: 0.85rem;">Evangelion</p>
+                </div>
+              </div>
+              <div class="playlist-item" style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); cursor: pointer; transition: all 200ms;">
+                <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #9c27b0, #c2185b); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; flex-shrink: 0;">🎶</div>
+                <div style="flex: 1;">
+                  <p style="margin: 0; color: #ccc; font-weight: 600; font-size: 0.95rem;">Idol</p>
+                  <p style="margin: 0; color: #999; font-size: 0.85rem;">YOASOBI</p>
+                </div>
+              </div>
+              <div class="playlist-item" style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); cursor: pointer; transition: all 200ms;">
+                <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #ff6b9d, #c2185b); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; flex-shrink: 0;">🎼</div>
+                <div style="flex: 1;">
+                  <p style="margin: 0; color: #ccc; font-weight: 600; font-size: 0.95rem;">Kabutsu</p>
+                  <p style="margin: 0; color: #999; font-size: 0.85rem;">YOASOBI</p>
+                </div>
+              </div>
+              <div class="playlist-item" style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); cursor: pointer; transition: all 200ms;">
+                <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #ff8aa6, #d81b60); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; flex-shrink: 0;">🎹</div>
+                <div style="flex: 1;">
+                  <p style="margin: 0; color: #ccc; font-weight: 600; font-size: 0.95rem;">Unravel</p>
+                  <p style="margin: 0; color: #999; font-size: 0.85rem;">Tokyo Ghoul</p>
+                </div>
+              </div>
+              <div class="playlist-item" style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); cursor: pointer; transition: all 200ms;">
+                <div style="width: 48px; height: 48px; border-radius: 8px; background: linear-gradient(135deg, #ff99b9, #c2185b); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.2rem; flex-shrink: 0;">🎤</div>
+                <div style="flex: 1;">
+                  <p style="margin: 0; color: #ccc; font-weight: 600; font-size: 0.95rem;">Renai Circulation</p>
+                  <p style="margin: 0; color: #999; font-size: 0.85rem;">Kana Hanazawa</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1068,19 +1099,19 @@
 
     <script>
       const noteTakerCard = document.getElementById('noteTakerCard');
-      const cursorCard = document.getElementById('cursorCard');
+      const musicCard = document.getElementById('musicCard');
       const clickerCard = document.getElementById('clickerCard');
       const settingsCard = document.getElementById('settingsCard');
       const terminalCard = document.getElementById('terminalCard');
       const screentimeCard = document.getElementById('screentimeCard');
       const noteModal = document.getElementById('noteModal');
-      const cursorModal = document.getElementById('cursorModal');
+      const musicModal = document.getElementById('musicModal');
       const clickerModal = document.getElementById('clickerModal');
       const settingsModal = document.getElementById('settingsModal');
       const terminalModal = document.getElementById('terminalModal');
       const screentimeModal = document.getElementById('screentimeModal');
       const noteCloseButton = document.getElementById('noteCloseButton');
-      const cursorCloseButton = document.getElementById('cursorCloseButton');
+      const musicCloseButton = document.getElementById('musicCloseButton');
       const clickerCloseButton = document.getElementById('clickerCloseButton');
       const settingsCloseButton = document.getElementById('settingsCloseButton');
       const terminalCloseButton = document.getElementById('terminalCloseButton');
@@ -1093,7 +1124,45 @@
       const noteTitle = document.getElementById('noteTitle');
       const noteBody = document.getElementById('noteBody');
       const previewText = document.getElementById('previewText');
-      const cursorCards = document.querySelectorAll('.cursor-card');
+      const playBtn = document.getElementById('playBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const progressBar = document.getElementById('progressBar');
+      const progressFull = document.getElementById('progressFull');
+      const trackTitle = document.getElementById('trackTitle');
+      const trackArtist = document.getElementById('trackArtist');
+      const currentTimeDisplay = document.getElementById('currentTime');
+      const durationDisplay = document.getElementById('duration');
+      let isPlaying = false;
+      let currentTrackIndex = 0;
+      let totalSeconds = 252;
+      const tracks = [
+        { title: "Slip Away", artist: 'Blue Beat', duration: 261 },
+        { title: 'Idol', artist: 'YOASOBI', duration: 245 },
+        { title: 'Kabutsu', artist: 'YOASOBI', duration: 238 },
+        { title: 'Unravel', artist: 'Tokyo Ghoul', duration: 256 },
+        { title: 'Renai Circulation', artist: 'Kana Hanazawa', duration: 241 },
+        { title: 'Clannad After Story', artist: 'Dango Daikazoku', duration: 210 }
+      ];
+         
+        
+
+      function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${String(secs).padStart(2, '0')}`;
+      }
+
+      function updateTrackDisplay() {
+        trackTitle.textContent = tracks[currentTrackIndex].title;
+        trackArtist.textContent = tracks[currentTrackIndex].artist;
+        totalSeconds = tracks[currentTrackIndex].duration;
+        durationDisplay.textContent = formatTime(totalSeconds);
+        elapsedSeconds = 0;
+        currentTimeDisplay.textContent = '0:00';
+        progressBar.style.width = '0%';
+      }
 
       noteTakerCard.addEventListener('click', () => {
         noteModal.hidden = false;
@@ -1117,19 +1186,58 @@
         }
       });
 
-      cursorCard.addEventListener('click', () => {
-        cursorModal.hidden = false;
+      musicCard.addEventListener('click', () => {
+        musicModal.hidden = false;
       });
 
-      cursorCloseButton.addEventListener('click', () => {
-        cursorModal.hidden = true;
+      musicCloseButton.addEventListener('click', () => {
+        musicModal.hidden = true;
       });
 
-      cursorModal.addEventListener('click', (e) => {
-        if (e.target === cursorModal) {
-          cursorModal.hidden = true;
+      musicModal.addEventListener('click', (e) => {
+        if (e.target === musicModal) {
+          musicModal.hidden = true;
         }
       });
+
+      playBtn.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        playBtn.textContent = isPlaying ? '⏸' : '▶';
+      });
+
+      <button id="playBtn">Play Music</button>
+
+      prevBtn.addEventListener('click', () => {
+        currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+        updateTrackDisplay();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+        updateTrackDisplay();
+      });
+
+      progressFull.addEventListener('click', (e) => {
+        const rect = progressFull.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        elapsedSeconds = percent * totalSeconds;
+        progressBar.style.width = (percent * 100) + '%';
+        currentTimeDisplay.textContent = formatTime(elapsedSeconds);
+      });
+
+      updateTrackDisplay();
+
+      setInterval(() => {
+        if (isPlaying) {
+          elapsedSeconds += 0.5;
+          if (elapsedSeconds >= totalSeconds) {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            updateTrackDisplay();
+          }
+          progressBar.style.width = (elapsedSeconds / totalSeconds * 100) + '%';
+          currentTimeDisplay.textContent = formatTime(elapsedSeconds);
+        }
+      }, 500);
 
       addNoteButton.addEventListener('click', () => {
         const title = noteTitle.value.trim() || 'Untitled note';
@@ -1139,11 +1247,7 @@
         noteBody.value = '';
       });
 
-      cursorCards.forEach((card) => {
-        card.addEventListener('click', () => {
-          document.body.style.cursor = card.dataset.cursor;
-        });
-      });
+
 
       settingsCard.addEventListener('click', () => {
         settingsModal.hidden = false;
@@ -1227,6 +1331,10 @@
       });
 
       updateTimerDisplay();
-    </script>
+
+      </script>
+      <audio id="bgMusic">
+      <source src="Slip away.mp3" type="audio/mpeg" />
+      </audio>
   </body>
 </html>
