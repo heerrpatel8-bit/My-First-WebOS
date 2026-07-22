@@ -78,6 +78,8 @@
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 22px;
         margin-top: 28px;
+        position: relative;
+        z-index: 10;
       }
       .app-card {
         position: relative;
@@ -611,6 +613,8 @@
         content: '🍒';
       }
       .footer {
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
@@ -884,10 +888,12 @@
         </div>
       </section>
 
+    
       <footer class="footer">
         <a href="page2.html">Back to profile</a>
         <a href="index.html">Return home</a>
       </footer>
+    
     </div>
 
     <div class="clicker-modal" id="clickerModal" hidden>
@@ -1127,7 +1133,6 @@
       const playBtn = document.getElementById('playBtn');
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
-      const volumeSlider = document.getElementById('volumeSlider');
       const progressBar = document.getElementById('progressBar');
       const progressFull = document.getElementById('progressFull');
       const trackTitle = document.getElementById('trackTitle');
@@ -1205,7 +1210,7 @@
         playBtn.textContent = isPlaying ? '⏸' : '▶';
       });
 
-      <button id="playBtn">Play Music</button>
+      
 
       prevBtn.addEventListener('click', () => {
         currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
@@ -1247,7 +1252,7 @@
         noteBody.value = '';
       });
 
-
+        
 
       settingsCard.addEventListener('click', () => {
         settingsModal.hidden = false;
@@ -1332,9 +1337,8 @@
 
       updateTimerDisplay();
 
+
       </script>
-      <audio id="bgMusic">
-      <source src="Slip away.mp3" type="audio/mpeg" />
-      </audio>
+      
   </body>
 </html>
