@@ -111,11 +111,127 @@
       </div>
       </div>
     
+      <div class="pixel-window" id="pixelWindow">
+        <div class="pixel-header" id="pixelDragHandle">
+
+          <div class="pixel-title">
+            🎨 Pixel Paint
+          </div>
+          <button id="pixelClose"  class="pixel-close">×</button>
+
+        </div>
+        <div class="pixel-body">
+          <p class="pixel-subtitle">
+            create. paint. blossom. 🍒
+          </p>
+          <div class="pixel-toolbar">
+            <label>Color:</label>
+            <input
+              type="color"
+              id="colorPicker"
+              value="#ff8db6"
+              />
+
+              <button id="eraserButton">
+                Eraser
+              </button>
+
+              <button id="saveButton">
+                Save
+              </button>
+
+              <select id="savedProjects">
+                <option>Saved Projects</option>
+              </select>
+
+              <button id="clearButton">
+                Clear
+              </button>
+              </div>
+
+              <div
+                id="pixelCanvas"
+                class="pixel-canvas">
+             </div>
+          </div>
+        </div>
+
+        <div class="save-modal" id="saveModal">
+          <div class="save-box">
+            <h2>Save Drawing 🍒</h2>
+            <p> Enter a name for your drawing:</p>
+            <input
+              type="text"
+              id="drawingName"
+              placeholder="Cherry Blossom">
+
+              <div class="save-buttons">
+
+                <button id="cancelSave">
+                  Cancel
+                </button>
+
+                <button id="confirmSave">
+                  Save
+                </button>
+              </div>
+          </div>
+        </div>
+
+        <div class="music-window" id="musicWindow">
+          <div class="music-header" id="musicDragHandle">
+            <div class="music-title">
+              🎵 Cherry Music
+            </div>
+
+            <button id="musicClose" class="music-close">×</button>
+          </div>
+
+          <div class="music-body">
+
+            <img
+              id="albumArt"
+              class="album-art"
+              src="cover/beautiful.jpg"
+            >
+
+            <h2 id="songTitle">Song Title</h2>
+            <p id="artistName">Artist Name</p>
+
+            <input
+              type="range"
+              id="progressBar"
+              value="0"
+              min="0"
+              max="100"
+              >
+
+              <div class="time-row">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+              </div>
+
+              <div class="music-controls">
+
+                <button id="prevSong">
+                  ⏮
+                </button>
+
+                <button id="playPause">
+                   ▶
+                </button>
+
+                <button id="nextSong">
+                  ⏭
+                </button>
+              </div>
+          </div>
+        </div>
+
+    <audio id="audioPlayer"></audio>
+      
     <script src="ind.js"></script>
-  </body>
-</html>
-
-
-
+    </body>
+    </html>
    
   
