@@ -10,6 +10,10 @@
       const closeButton = document.getElementById('windowCloseButton');
       const brandToggle = document.getElementById('brandToggle');
       const personalCard = document.getElementById('personalCard');
+      const pixelCard = document.getElementById("pixelCard");
+      const pixelWindow = document.getElementById("pixelWindow");
+      const pixelClose = document.getElementById("pixelClose");
+      const pixelDragHandle = document.getElementById("pixelDragHandle");
       let isDragging = false;
       let dragTarget = null;
       let offsetX = 0;
@@ -156,11 +160,11 @@
 
     else if (command === "about") {
         print(`
-Cherry Terminal v1.0
+        Cherry Terminal v1.0
 
-A lightweight interactive shell
-built for CherryOS.
-`);
+        A lightweight interactive shell
+        built for CherryOS.
+        `);
     }
 
     else if (command === "fortune") {
@@ -176,8 +180,289 @@ built for CherryOS.
         print(`Type "help" to see available commands.`);
     }
 
+    });
+
+    pixelCard.addEventListener("click", () => {
+      pixelWindow.style.display = "flex";
+    });
+
+    pixelClose.addEventListener("click", () => {
+      pixelWindow.style.display = "none";
+    });
+
+    pixelDragHandle.addEventListener("pointerdown", (event) => {
+      startDrag(pixelWindow, event);
+    });
+
+    pixelClose.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+    });
+
+    const pixelCanvas = document.getElementById("pixelCanvas");
+    const colorPicker = document.getElementById("colorPicker");
+    const clearButton = document.getElementById("clearButton");
+    const eraserButton = document.getElementById("eraserButton");
+    const saveButton = document.getElementById("saveButton");
+    const savedProjects = document.getElementById("savedProjects");
+    const saveModal = document.getElementById("saveModal");
+    const drawingName = document.getElementById("drawingName");
+    const confirmSave = document.getElementById("confirmSave");
+    const cancelSave = document.getElementById("cancelSave");
+
+    let currentColor = "#ff8db6";
+    let eraserMode = false;
+
+    // Create 16x16 grid
+    for (let i = 0; i < 100; i++) {
+      const pixel = document.createElement("div");
+      pixel.classList.add("pixel");
+
+      pixel.addEventListener("click", () => {
+        pixel.style.backgroundColor = eraserMode
+        ? "#ffffff"
+        : currentColor;
+      });
+
+      pixelCanvas.appendChild(pixel);
+    }
+
+    colorPicker.addEventListener("input", () => {
+      currentColor = colorPicker.value;
+      eraserMode = false;
+    });
+
+    eraserButton.addEventListener("click", () => {
+      eraserMode = true;
+    });
+
+    clearButton.addEventListener("click", () => {
+      document.querySelectorAll(".pixel").forEach(pixel => {
+        pixel.style.backgroundColor = "#ffffff";
+      });
+    });
+
+    saveButton.addEventListener("click", () => {
+      drawingName.value = "";
+      saveModal.style.display = "flex";
+      drawingName.focus();
+    });
+
+    confirmSave.addEventListener("click", () => {
+      const projectName = drawingName.value.trim();
+      if (projectName === "") return;
+      const drawing = [];
+      document.querySelectorAll(".pixel").forEach(pixel => {
+        drawing.push(pixel.style.backgroundColor || "#ffffff");
+      });
+      localStorage.setItem(projectName, JSON.stringify(drawing));
+      let option = document.querySelector(
+        `#savedProjects option[value="${projectName}"]`
+      );
+
+      if(!option) {
+        option = document.createElement("option");
+        option.value = projectName;
+        option.textContent = projectName;
+        savedProjects.appendChild(option);
+      }
+
+      savedProjects.value = projectName;
+      saveModal.style.display = "none";
+    });
+
+    cancelSave.addEventListener("click", () => {
+      saveModal.style.display = "none";
+    });
+
+    saveModal.addEventListener("click", (e) => {
+      if (e.target === saveModal) {
+        saveModal.style.display = "none";
+      }
+    });
+
+    savedProjects.addEventListener("change", () => {
+      const data = localStorage.getItem(savedProjects.value);
+      if(!data) return;
+      const colors = JSON.parse(data);
+      document.querySelectorAll(".pixel").forEach((pixel, index) => {
+        pixel.style.backgroundColor = colors[index];
+      });
+    });
+
+    for(let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const option = document.createElement("option");
+      option.value = key;
+      option.textContent = key;
+      savedProjects.appendChild(option);
+    }
+
+    const musicCard = document.getElementById("musicCard");
+    const musicWindow = document.getElementById("musicWindow");
+    const musicClose = document.getElementById("musicClose");
+    const musicDragHandle = document.getElementById("musicDragHandle");
+
+    musicCard.addEventListener("click", () => {
+      musicWindow.style.display = "flex";
+    });
+
+    musicClose.addEventListener("click", () => {
+      musicWindow.style.display = "none";
+    });
+
+    musicDragHandle.addEventListener("pointerdown", (event) => {
+      startDrag(musicWindow, event);
+    });
+
+    musicClose.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+    });
+
+    const songs = [
+      {
+        title: "Beautiful Dream",
+        artist: "Diego Nava",
+        file: "songs/beautiful-dream.mp3",
+        cover: "cover/beautiful.jpg",
+      },
+      {
+        title: "Discover",
+        artist: "Eugenio Mininni",
+        file: "songs/discover.mp3",
+        cover: "cover/discover.jpg",
+      },
+
+      {
+        title: "Complicated",
+        artist: "Arulo",
+        file: "songs/complicated.mp3",
+        cover: "cover/complicated.jpg"
+      }
+    ];
+
+    const audioPlayer = document.getElementById("audioPlayer");
+    const albumArt = document.getElementById("albumArt");
+    const songTitle = document.getElementById("songTitle");
+    const artistName = document.getElementById("artistName");
+
+    const playPause = document.getElementById("playPause");
+    const prevSong = document.getElementById("prevSong");
+    const nextSong = document.getElementById("nextSong");
+
+    const progressBar = document.getElementById("progressBar");
+    const currentTime = document.getElementById("currentTime");
+    const duration = document.getElementById("duration");
+
+    let currentSong = 0;
+
+    function loadSong(index){
+      audioPlayer.src = songs[index].file;
+      albumArt.src = songs[index].cover;
+      songTitle.textContent = songs[index].title;
+      artistName.textContent = songs[index].artist;
+    }
+
+    loadSong(currentSong);
+    audioPlayer.volume = 1;
+    audioPlayer.muted = false;
+    console.log(audioPlayer.volume);
+    console.log(audioPlayer.muted);
+    console.log(audioPlayer.src);
+
+    audioPlayer.addEventListener("loadedmetadata", () => {
+      console.log("Loaded!");
+      console.log(audioPlayer.duration);
+    });
+
+    audioPlayer.addEventListener("error", () => {
+      console.log(audioPlayer.error);
+    });
+
+    audioPlayer.addEventListener("play", () => {
+      console.log("Playing...");
+    });
+
+    audioPlayer.addEventListener("pause", () => {
+      console.log("Paused");
+    });
+
+    playPause.addEventListener("click", () => {
+      if(audioPlayer.paused){
+        audioPlayer.play();
+        playPause.textContent = "⏸";
+      } else {
+        audioPlayer.pause();
+        playPause.textContent = "▶";
+      }
+    });
+
+    nextSong.addEventListener("click", () => {
+      currentSong++;
+      if(currentSong >= songs.length){
+        currentSong = 0;
+      }
+      loadSong(currentSong);
+      console.log(audioPlayer.src);
+      console.log(albumArt.src);
+      audioPlayer.play()
+      playPause.textContent = "⏸";
+    });
+
+    prevSong.addEventListener("click", () => {
+      currentSong--;
+      if(currentSong < 0){
+        currentSong = songs.length - 1;
+      }
+
+      loadSong(currentSong);
+      audioPlayer.play();
+      playPause.textContent = "⏸";
+    });
+
+    audioPlayer.addEventListener("timeupdate", () => {
+      progressBar.value = 
+      (audioPlayer.currentTime / audioPlayer.duration) * 100 || 0;
+
+      currentTime.textContent =
+      formatTime(audioPlayer.currentTime);
+
+      duration.textContent =
+      formatTime(audioPlayer.duration);
+    });
+
+    progressBar.addEventListener("input", () => {
+      audioPlayer.currentTime = 
+      (progressBar.value / 100) * audioPlayer.duration; 
+    });
+
+    function formatTime(time){
+      if(isNaN(time)) return "0:00";
+      const minutes = Math.floor(time / 60);
+      const seconds = Math.floor(time % 60);
+      return `${minutes}:${String(seconds).padStart(2,"0")}`;
+    }
+
+    audioPlayer.addEventListener("ended", () => {
+      currentSong++;
+      if(currentSong >= songs.length){
+        currentSong = 0;        
+      }
+
+      loadSong(currentSong);
+      console.log(audioPlayer.src);
+      audioPlayer.play()
+    });
+
+    audioPlayer.addEventListener("timeupdate", () => {
+    console.log(audioPlayer.currentTime);
+
+    progressBar.value =
+    (audioPlayer.currentTime / audioPlayer.duration) * 100 || 0;
+
+    currentTime.textContent =
+    formatTime(audioPlayer.currentTime);
+
+    duration.textContent =
+    formatTime(audioPlayer.duration);
 });
-
-     
-
-     
+   
