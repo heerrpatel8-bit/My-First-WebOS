@@ -322,20 +322,20 @@
       {
         title: "Beautiful Dream",
         artist: "Diego Nava",
-        file: "beautiful-dream.mp3",
+        file: "songs/beautiful-dream.mp3",
         cover: "cover/beautiful.jpg",
       },
       {
         title: "Discover",
         artist: "Eugenio Mininni",
-        file: "discover.mp3",
+        file: "songs/discover.mp3",
         cover: "cover/discover.jpg",
       },
 
       {
         title: "Complicated",
         artist: "Arulo",
-        file: "complicated.mp3",
+        file: "songs/complicated.mp3",
         cover: "cover/complicated.jpg"
       }
     ];
