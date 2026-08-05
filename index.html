@@ -228,6 +228,55 @@
           </div>
         </div>
 
+        <div class="calculator-window" id=calculatorWindow>
+          <div class="calculator-header" id="calculatorDragHandle">
+            <span>Calculator</span>
+            <button
+              class="window-close"
+              id="calculatorClose"
+              aria-label="Close calculator">×</button>
+          </div>
+          <div class="calculator-body">
+
+            <input
+              type="text"
+              id="calcDisplay"
+              value="0"
+              readonly
+              autocompleter="off"
+              >
+
+              <div class="calculator-grid">
+
+                <button class="calc-btn function" data-value="clear">C</button>
+                <button class="calc-btn function" data-value="(">(</button>
+                <button class="calc-btn function" data-value=")">)</button>
+                <button class="calc-btn operator" data-value="/">÷</button>
+
+                <button class="calc-btn" data-value="7">7</button>
+                <button class="calc-btn" data-value="8">8</button>
+                <button class="calc-btn" data-value="9">9</button>
+                <button class="calc-btn operator" data-value="*">×</button>
+
+                <button class="calc-btn" data-value="4">4</button>
+                <button class="calc-btn" data-value="5">5</button>
+                <button class="calc-btn" data-value="6">6</button>
+                <button class="calc-btn operator" data-value="-">-</button>
+
+                <button class="calc-btn" data-value="1">1</button>
+                <button class="calc-btn" data-value="2">2</button>
+                <button class="calc-btn" data-value="3">3</button>
+                <button class="calc-btn operator" data-value="+">+</button>
+
+                <button class="calc-btn" data-value="0">0</button>
+                <button class="calc-btn" data-value=".">.</button>
+                <button class="calc-btn function" data-value="%">%</button>
+                <button class="calc-btn equals" data-value="=">=</button>
+
+              </div>
+          </div>
+        </div>
+
     <audio id="audioPlayer"></audio>
       
     <script src="ind.js"></script>

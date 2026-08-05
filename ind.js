@@ -172,9 +172,6 @@
         print(random);
     }
 
-    
-        
-
     else {
         print(`Command not found: ${command}`);
         print(`Type "help" to see available commands.`);
@@ -465,5 +462,73 @@
     duration.textContent =
     formatTime(audioPlayer.duration);
 });
+
+  const calculatorCard = document.getElementById("calculatorCard");
+  const calculatorWindow = document.getElementById("calculatorWindow");
+  const calculatorClose = document.getElementById("calculatorClose");
+  const calculatorDragHandle = document.getElementById("calculatorDragHandle");
+  const calcDisplay = document.getElementById("calcDisplay");
+  const calcButtons = document.querySelectorAll(".calc-btn");
+
+  calculatorCard.addEventListener("click", () => {
+    calculatorWindow.style.display = "flex";
+  });
+
+  calculatorClose.addEventListener("click", () => {
+    calculatorWindow.style.display = "none";
+  });
+
+  calculatorClose.addEventListener("pointerdown", (e) => {
+    e.stopPropagation();
+  });
+
+  calculatorDragHandle.addEventListener("pointerdown", (event) => {
+    startDrag(calculatorWindow, event);
+  });
+
+  let expression = "";
+  
+  calcButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const value = button.dataset.value;
+
+      if(value === "clear"){
+        expression = "";
+        calcDisplay.value = "0";
+        return;
+      }
+
+      if(value === "="){
+        try{
+          expression = String(eval(expression));
+          calcDisplay.value = expression;
+        }
+
+        catch{
+          calcDisplay.value = "Error";
+          expression = "";
+        }
+
+        return;
+      }
+
+      if(value === "%"){
+        try{
+          expression = String(eval(expression) / 100);
+          calcDisplay.value = expression;
+        }
+
+        catch{
+          calcDisplay.value = "Error";
+          expression = "";
+        }
+
+        return;
+      }
+
+      expression += value;
+      calcDisplay.value = expression;
+    });
+  });
 
    
