@@ -531,4 +531,57 @@
     });
   });
 
-   
+   const screentimeCard = document.getElementById("screentimeCard");
+   const screentimeWindow = document.getElementById("screentimeWindow");
+   const screentimeClose = document.getElementById("screentimeClose");
+   const screentimeDragHandle = document.getElementById("screentimeDragHandle");
+   const timerDisplay = document.getElementById("timerDisplay");
+   const startTimerButton = document.getElementById("startTimerButton");
+   const pauseTimerButton = document.getElementById("pauseTimerButton");
+   const resetTimerButton = document.getElementById("resetTimerButton");
+
+   screentimeCard.addEventListener("click", () => {
+    screentimeWindow.style.display = "flex";
+   });
+
+   screentimeClose.addEventListener("click", () => {
+    screentimeWindow.style.display = "none";
+   });
+
+   screentimeClose.addEventListener("pointerdown", (e) => {
+    e.stopPropagation();
+   });
+
+   screentimeDragHandle.addEventListener("pointerdown", (event) => {
+    startDrag(screentimeWindow, event);
+   });
+
+   let seconds = 0;
+   let timer = null;
+
+   function updateTimer(){
+    const hrs = String(Math.floor(seconds / 3600)).padStart(2,"0");
+    const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2,"0");
+    const secs = String(seconds % 60).padStart(2,"0");
+    timerDisplay.textContent = `${hrs}:${mins}:${secs}`;
+   }
+
+   startTimerButton.addEventListener("click",()=>{
+    if(timer) return;
+    timer = setInterval(()=>{
+      seconds++;
+      updateTimer();
+    },1000);
+   });
+
+   pauseTimerButton.addEventListener("click",()=>{
+    clearInterval(timer);
+    timer = null;
+   });
+
+   resetTimerButton.addEventListener("click",()=>{
+    clearInterval(timer);
+    timer = null;
+    seconds = 0;
+    updateTimer();
+   });

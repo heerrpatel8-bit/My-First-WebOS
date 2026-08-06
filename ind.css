@@ -273,8 +273,8 @@
       left: 50%;
       transform: translate(-50%, -50%);
 
-      width: 820px;
-      height: 560px;
+      width: 720px;
+      height: 500px;
 
       display: none;
       flex-direction: column;
@@ -823,13 +823,15 @@
         touch-action:none;
        }
 
-       .calculator-header span{
-        position: absolute;
-        left: 50%;
-        transform:translateX(-50%);
-        font-size: 26px;
-        font-weight: 700;
-        color: #4d2d38;
+       .calculator-title{
+        position:absolute;
+        left:50%;
+        top:50%;
+        transform:translate(-50%, -50%);
+        font-size:24px;
+        font-weight:700;
+        color:#4d2d38;
+        white-space:nowrap;
        }
 
        .calculator-header:active{
@@ -936,4 +938,110 @@
 
        .equals:hover{
         background:#c86f91;
+       }
+
+       .screentime-window{
+        position:fixed;
+        top:130px;
+        left:320px;
+        width:500px;
+        display:none;
+        flex-direction:column;
+        overflow:hidden;
+        border-radius:26px;
+        background:#fdf7fb;
+        border:1px solid rgba(255,255,255,.4);
+        box-shadow:0 30px 70px rgba(0,0,0,.18);
+        backdrop-filter:blur(12px);
+        z-index:1000;
+       }
+
+       .screentime-header{
+        position:relative;
+        height:60px;
+        display:flex;
+        align-items:center;
+        justify-content:flex-end;
+        padding:0 18px;
+        background:linear-gradient(
+          135deg,
+          #ffd4e4,
+          #ffb4cf
+        );
+        border-bottom:1px solid rgba(0,0,0,.08);
+        cursor:grab;
+        user-select:none;
+        touch-action:none;
+       }
+
+       .screentime-title{
+        position:absolute;
+        left:50%;
+        top:50%;
+        transform:translate(-50%, -50%);
+        font-size:22px;
+        font-weight:700;
+        color:#4d2d38;
+        white-space:nowrap;
+        width:max-content;
+       }
+
+       .screentime-body{
+        flex:1;
+        padding:20px;
+        background:#fff8fb;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:14px;
+       }
+
+       .timer-display{
+        font-size:2.75rem;
+        font-weight:800;
+        letter-spacing:5px;
+        color:#d91b6a;
+       }
+
+       .timer-labels{
+        width:205px;
+        display:flex;
+        justify-content:space-between;
+        margin-top:-10px;
+        color:#9c6677;
+        font-size:.82rem;
+        font-weight:600;
+       }
+
+       .timer-buttons{
+        display:flex;
+        gap:14px;
+       }
+
+       .timer-btn{
+        border:none;
+        border-radius:16px;
+        padding:10px 22px;
+        font-size:.95rem;
+        font-weight:700;
+        cursor:pointer;
+        transition:.25s;
+       }
+
+       .timer-btn.start{
+        background:#df1a6f;
+        box-shadow: 0 5px 15px rgba(223,26,111,.18);
+        color:white;
+       }
+
+       .timer-btn.pause,
+       .timer-btn.reset{
+        background:#ffd6e5;
+        color:#8b3657;
+       }
+
+       .timer-btn:hover{
+        transform:translateY(-2px);
+        background:#ffbfd5;
        }

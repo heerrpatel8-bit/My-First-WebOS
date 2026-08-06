@@ -48,7 +48,7 @@
 
       <button class="dock-app" id="pixelCard">
         <span class="dock-icon">🎨</span>
-        <span class="dock-label">Pixel</span>
+        <span class="dock-label">Paint</span>
       </button>
 
       <button class="dock-app" id="musicCard">
@@ -63,7 +63,7 @@
 
       <button class="dock-app" id="screentimeCard">
         <span class="dock-icon">⏳</span>
-        <span class="dock-label">Screen</span>
+        <span class="dock-label">Timer</span>
       </button>
 
       <button class="dock-app" id="noteTakerCard">
@@ -115,7 +115,7 @@
         <div class="pixel-header" id="pixelDragHandle">
 
           <div class="pixel-title">
-            🎨 Pixel Paint
+            🎨 Cherry Paint
           </div>
           <button id="pixelClose"  class="pixel-close">×</button>
 
@@ -230,7 +230,7 @@
 
         <div class="calculator-window" id=calculatorWindow>
           <div class="calculator-header" id="calculatorDragHandle">
-            <span>Calculator</span>
+            🍒 Calculator
             <button
               class="window-close"
               id="calculatorClose"
@@ -276,6 +276,52 @@
               </div>
           </div>
         </div>
+
+    <div class="screentime-window" id="screentimeWindow">
+      <div class="screentime-header" id="screentimeDragHandle">
+        <div class="screentime-title">
+          ⏱️ Cherry Screentime</div>
+      
+        <button
+          class="window-close"
+          id="screentimeClose"
+          aria-label="Close"> ×
+        </button>
+      </div>
+
+      <div class="screentime-body">
+        <div class="timer-display" id="timerDisplay">
+          00:00:00
+        </div>
+
+        <div class="timer-labels">
+          <span>hr</span>
+          <span>min</span>
+          <span>sec</span>
+        </div>
+
+        <div class="timer-buttons">
+
+          <button
+            class="timer-btn start"
+            id="startTimerButton">
+            Start
+        </button>
+
+        <button
+          class="timer-btn pause"
+          id="pauseTimerButton">
+          Pause
+        </button>
+
+        <button
+          class="timer-btn reset"
+          id="resetTimerButton">
+          Reset
+        </button>
+        </div>
+      </div>
+    </div>
 
     <audio id="audioPlayer"></audio>
       
