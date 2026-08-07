@@ -209,7 +209,6 @@
     let currentColor = "#ff8db6";
     let eraserMode = false;
 
-    // Create 16x16 grid
     for (let i = 0; i < 100; i++) {
       const pixel = document.createElement("div");
       pixel.classList.add("pixel");
@@ -585,3 +584,270 @@
     seconds = 0;
     updateTimer();
    });
+
+   const notesCard =
+document.getElementById("notesCard");
+
+const notesWindow =
+document.getElementById("notesWindow");
+
+const notesClose =
+document.getElementById("notesClose");
+
+const notesDragHandle =
+document.getElementById("notesDragHandle");
+
+
+const newNoteButton =
+document.getElementById("newNoteButton");
+
+const saveNoteButton =
+document.getElementById("saveNoteButton");
+
+const deleteNoteButton =
+document.getElementById("deleteNoteButton");
+
+
+const noteTitle =
+document.getElementById("noteTitle");
+
+const noteText =
+document.getElementById("noteText");
+
+
+const savedNotes =
+document.getElementById("savedNotes");
+
+
+let currentNote = null;
+
+
+
+// OPEN
+
+notesCard.addEventListener("click",()=>{
+
+notesWindow.style.display="flex";
+
+loadNotes();
+
+});
+
+
+
+// CLOSE
+
+notesClose.addEventListener("click",()=>{
+
+notesWindow.style.display="none";
+
+});
+
+
+
+notesClose.addEventListener("pointerdown",(e)=>{
+
+e.stopPropagation();
+
+});
+
+
+
+// DRAG
+
+notesDragHandle.addEventListener("pointerdown",(event)=>{
+
+startDrag(notesWindow,event);
+
+});
+
+
+
+
+// NEW NOTE
+
+newNoteButton.addEventListener("click",()=>{
+
+
+currentNote=null;
+
+
+noteTitle.value="";
+
+noteText.value="";
+
+
+});
+
+
+
+
+
+// SAVE
+
+saveNoteButton.addEventListener("click",()=>{
+
+
+let title =
+noteTitle.value.trim();
+
+
+if(title===""){
+
+title="Untitled Note";
+
+}
+
+
+
+const note={
+
+title:title,
+
+text:noteText.value,
+
+date:new Date().toLocaleDateString()
+
+};
+
+
+
+const id =
+currentNote || "note-"+Date.now();
+
+
+
+localStorage.setItem(
+
+id,
+
+JSON.stringify(note)
+
+);
+
+
+
+currentNote=id;
+
+
+loadNotes();
+
+
+});
+
+
+
+
+
+// LOAD NOTES
+
+function loadNotes(){
+
+
+savedNotes.innerHTML="";
+
+
+let found=false;
+
+
+
+for(let i=0;i<localStorage.length;i++){
+
+
+const key =
+localStorage.key(i);
+
+
+
+if(!key.startsWith("note-"))
+continue;
+
+
+
+found=true;
+
+
+
+const note =
+JSON.parse(
+localStorage.getItem(key)
+);
+
+
+
+const item =
+document.createElement("div");
+
+
+
+item.className="note-item";
+
+
+item.textContent =
+note.title;
+
+
+
+item.onclick=()=>{
+
+
+currentNote=key;
+
+
+noteTitle.value=note.title;
+
+
+noteText.value=note.text;
+
+
+};
+
+
+
+savedNotes.appendChild(item);
+
+
+}
+
+
+
+if(!found){
+
+savedNotes.textContent="No notes yet";
+
+}
+
+
+}
+
+
+
+
+
+
+// DELETE
+
+deleteNoteButton.addEventListener("click",()=>{
+
+
+if(!currentNote)
+return;
+
+
+
+localStorage.removeItem(currentNote);
+
+
+
+currentNote=null;
+
+
+noteTitle.value="";
+
+noteText.value="";
+
+
+loadNotes();
+
+
+});

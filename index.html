@@ -66,7 +66,7 @@
         <span class="dock-label">Timer</span>
       </button>
 
-      <button class="dock-app" id="noteTakerCard">
+      <button class="dock-app" id="notesCard">
         <span class="dock-icon">📝</span>
         <span class="dock-label">Notes</span>
       </button>
@@ -323,10 +323,91 @@
       </div>
     </div>
 
-    <audio id="audioPlayer"></audio>
+<!-- Notes App Window -->
+
+<div class="notes-window" id="notesWindow">
+
+  <div class="notes-header" id="notesDragHandle">
+
+    <div class="notes-title">
+      📝 Cherry Notes
+    </div>
+
+    <button id="notesClose" class="notes-close">
+      ×
+    </button>
+
+  </div>
+
+
+  <div class="notes-body">
+
+
+    <div class="notes-sidebar">
+
+
+      <button id="newNoteButton" class="notes-new">
+        + New Note
+      </button>
+
+
+      <h4>
+        Saved Notes
+      </h4>
+
+
+      <div id="savedNotes">
+      </div>
+
+
+    </div>
+
+
+
+    <div class="notes-editor">
+
+
+      <input
+      id="noteTitle"
+      type="text"
+      placeholder="Note title..."
+      >
+
+
+
+      <textarea
+      id="noteText"
+      placeholder="Start writing here... 🍒">
+      </textarea>
+
+
+
+      <div class="notes-buttons">
+
+
+        <button id="saveNoteButton">
+          Save
+        </button>
+
+
+        <button id="deleteNoteButton">
+          Delete
+        </button>
+
+
+      </div>
+
+
+
+    </div>
+
+
+  </div>
+
+
+</div>
+ <audio id="audioPlayer"></audio>
       
     <script src="ind.js"></script>
     </body>
     </html>
-   
-  
